@@ -238,35 +238,3 @@ function showSponsorV14(id){
 }
 const goV14Base=go;
 go=function(id){goV14Base(id);if(id==='profile')setTimeout(renderSponsorsV14,0);};
-
-function openScannerV15(){$('scannerModalV15')?.classList.add('open')}
-function closeScannerV15(){$('scannerModalV15')?.classList.remove('open')}
-function startScannerV15(){
- alert('📷 Escáner NutriFit\\n\\nLa interfaz está preparada. Para leer códigos de barras de verdad conectaremos la cámara del móvil con el lector de códigos y la base de productos.');
-}
-let pantryV15=JSON.parse(localStorage.getItem('nf_pantry_v15')||'[]');
-function openPantryV15(){renderPantryV15();$('pantryModalV15')?.classList.add('open')}
-function closePantryV15(){$('pantryModalV15')?.classList.remove('open')}
-function renderPantryV15(){
- const b=$('pantryListV15');if(!b)return;
- b.innerHTML=pantryV15.length?pantryV15.map((x,i)=>`<div class="pantryrowV15"><span>🥗 ${x}</span><button onclick="removePantryItemV15(${i})">×</button></div>`).join(''):'<div class="pantryemptyV15">Todavía no tienes alimentos en la despensa.</div>';
-}
-function addPantryItemV15(){
- const n=prompt('¿Qué alimento tienes en casa?');
- if(!n||!n.trim())return;
- pantryV15.push(n.trim());localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();
-}
-function removePantryItemV15(i){pantryV15.splice(i,1);localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();}
-
-/* V1.8 audit helpers */
-function scannerCapabilityV18(){
-  return 'BarcodeDetector' in window;
-}
-function startScannerV15(){
-  if(scannerCapabilityV18()){
-    alert('📷 Escáner NutriFit\\n\\nTu navegador permite detección de códigos de barras. El siguiente paso es conectar la cámara al catálogo de productos.');
-  }else{
-    alert('📷 Escáner NutriFit\\n\\nTu navegador no expone BarcodeDetector. Podemos usar el lector alternativo al conectar la cámara.');
-  }
-}
-console.log('NutriFit 1.8 auditada');
