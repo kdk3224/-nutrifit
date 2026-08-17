@@ -257,3 +257,16 @@ function addPantryItemV15(){
  pantryV15.push(n.trim());localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();
 }
 function removePantryItemV15(i){pantryV15.splice(i,1);localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();}
+
+/* V1.8 audit helpers */
+function scannerCapabilityV18(){
+  return 'BarcodeDetector' in window;
+}
+function startScannerV15(){
+  if(scannerCapabilityV18()){
+    alert('📷 Escáner NutriFit\\n\\nTu navegador permite detección de códigos de barras. El siguiente paso es conectar la cámara al catálogo de productos.');
+  }else{
+    alert('📷 Escáner NutriFit\\n\\nTu navegador no expone BarcodeDetector. Podemos usar el lector alternativo al conectar la cámara.');
+  }
+}
+console.log('NutriFit 1.8 auditada');
