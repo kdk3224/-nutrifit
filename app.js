@@ -14,7 +14,7 @@ function del(id){log=log.filter(x=>x.id!==id);localStorage.setItem('nf_log_v3',J
 function addWater(){water=Math.min(5000,water+250);localStorage.setItem('nf_water_v3',water);render()}
 function totals(){return log.reduce((a,x)=>({k:a.k+x.kcal,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0})}
 function saveHistory(){let t=totals(),key=new Date().toISOString().slice(0,10);history=history.filter(x=>x.date!==key);history.unshift({date:key,kcal:Math.round(t.k),foods:log.length});history=history.slice(0,14);localStorage.setItem('nf_history_v3',JSON.stringify(history))}
-function render(){let t=totals();$('kcal').textContent=Math.round(t.k);$('p').textContent=Math.round(t.p)+' g';$('c').textContent=Math.round(t.c)+' g';$('f').textContent=Math.round(t.f)+' g';$('foodCount').textContent=log.length+' alimento'+(log.length===1?'':'s');if(profile){$('targetKcal').textContent=' / '+profile.kcal;$('remaining').textContent=t.k>=profile.kcal?`Has alcanzado tu objetivo de ${profile.kcal} kcal`:`Te quedan ${Math.round(profile.kcal-t.k)} kcal`;$('pt').textContent=`${Math.round(t.p)} / ${profile.protein} g`;$('ct').textContent=`${Math.round(t.c)} / ${profile.carb} g`;$('ft').textContent=`${Math.round(t.f)} / ${profile.fat} g`;[['pb',t.p,profile.protein],['cb',t.c,profile.carb],['fb',t.f,profile.fat]].forEach(([id,v,m])=>$(id).style.width=Math.min(100,v/m*100)+'%');let pct=Math.min(100,t.k/profile.kcal*100);$('kcalPct').textContent=Math.round(pct)+'%';document.querySelector('.donut').style.setProperty('--deg',pct*3.6+'deg')}else{$('targetKcal').textContent='';$('remaining').textContent='Configura tu perfil para ver objetivos personalizados';$('kcalPct').textContent='—';['pt','ct','ft'].forEach(id=>$(id).textContent='Sin objetivo');['pb','cb','fb'].forEach(id=>$(id).style.width='0%')}$('waterText').textContent=(water/1000).toFixed(1).replace('.',',')+' / 2,5 L';$('waterBar').style.width=Math.min(100,water/25)+'%';$('meals').innerHTML=['Desayuno','Comida','Merienda','Cena','Snack'].map(m=>{let a=log.filter(x=>x.meal===m),sum=a.reduce((s,x)=>s+x.kcal,0);return `<div class="meal"><div class="mealhead"><b>${m}</b><span>${Math.round(sum)} kcal</span></div><button class="mealAddBtn" type="button" aria-label="Añadir a ${m}" onclick="openFoodForMeal('${m}')">＋</button>${a.length?a.map(x=>`<div class="foodrow"><span>${x.food} · ${x.g} g</span><span>${Math.round(x.kcal)} kcal <button onclick="del(${x.id})">×</button></span></div>`).join(''):'<div class="empty">Sin alimentos registrados</div>'}</div>`}).join('')}
+function render(){let t=totals();$('kcal').textContent=Math.round(t.k);$('p').textContent=Math.round(t.p)+' g';$('c').textContent=Math.round(t.c)+' g';$('f').textContent=Math.round(t.f)+' g';$('foodCount').textContent=log.length+' alimento'+(log.length===1?'':'s');if(profile){$('targetKcal').textContent=' / '+profile.kcal;$('remaining').textContent=t.k>=profile.kcal?`Has alcanzado tu objetivo de ${profile.kcal} kcal`:`Te quedan ${Math.round(profile.kcal-t.k)} kcal`;$('pt').textContent=`${Math.round(t.p)} / ${profile.protein} g`;$('ct').textContent=`${Math.round(t.c)} / ${profile.carb} g`;$('ft').textContent=`${Math.round(t.f)} / ${profile.fat} g`;[['pb',t.p,profile.protein],['cb',t.c,profile.carb],['fb',t.f,profile.fat]].forEach(([id,v,m])=>$(id).style.width=Math.min(100,v/m*100)+'%');let pct=Math.min(100,t.k/profile.kcal*100);$('kcalPct').textContent=Math.round(pct)+'%';document.querySelector('.donut').style.setProperty('--deg',pct*3.6+'deg')}else{$('targetKcal').textContent='';$('remaining').textContent='Configura tu perfil para ver objetivos personalizados';$('kcalPct').textContent='—';['pt','ct','ft'].forEach(id=>$(id).textContent='Sin objetivo');['pb','cb','fb'].forEach(id=>$(id).style.width='0%')}$('waterText').textContent=(water/1000).toFixed(1).replace('.',',')+' / 2,5 L';$('waterBar').style.width=Math.min(100,water/25)+'%';$('meals').innerHTML=['Desayuno','Comida','Merienda','Cena','Snack'].map(m=>{let a=log.filter(x=>x.meal===m),sum=a.reduce((s,x)=>s+x.kcal,0);return `<div class="meal"><div class="mealhead"><b>${m}</b><span>${Math.round(sum)} kcal</span></div><button class="mealAddBtn" type="button" aria-label="Añadir a ${m}" onclick="openFoodForMeal('${m}')">＋</button>${a.length?a.map(x=>`<div class="foodrow"><span>${x.food} · ${x.g} g</span><span>${Math.round(x.kcal)} kcal <button class="rowedit" onclick="editLoggedFood(${x.id})">✎</button><button onclick="del(${x.id})">×</button></span></div>`).join(''):'<div class="empty">Sin alimentos registrados</div>'}</div>`}).join('')}
 function generateDay(){let options=[['Desayuno','Avena con leche y plátano','Avena + leche + plátano'],['Comida','Pollo con arroz y brócoli','Pollo + arroz + brócoli'],['Merienda','Yogur con fresas y almendras','Yogur + fresas + almendras'],['Cena','Merluza con patata y tomate','Merluza + patata + tomate']];$('dayPlan').innerHTML='<div class="daycard"><h3>Plan orientativo</h3>'+options.map(x=>`<div class="daymeal"><b>${x[0]}</b>${x[1]}<small>${x[2]}</small></div>`).join('')+'</div>'}
 function renderProgress(){$('todayKcal').textContent=Math.round(totals().k);$('todayFoods').textContent=log.length;$('favCount').textContent=favs.length;$('history').innerHTML=history.length?history.map(x=>`<div class="historyrow"><span>${x.date}</span><b>${x.kcal} kcal · ${x.foods} alimentos</b></div>`).join(''):'<div class="coming">Todavía no hay historial.</div>'}
 function renderFavorites(){$('favoritesList').innerHTML=favs.length?favs.map(n=>`<div class="meal"><b>${n}</b><button class="ghost" onclick="quickFavorite('${n.replace(/'/g,"\\'")}')">Añadir</button></div>`).join(''):'<div class="coming">Todavía no tienes favoritos.</div>'}
@@ -102,5 +102,53 @@ function openFoodForMeal(meal){
   setTimeout(()=>{
     const sel=$('meal');
     if(sel) sel.value=meal;
+    const title=document.querySelector('#modal h2,#modal h3');
+    if(title) title.textContent='Añadir a '+meal;
   },60);
 }
+
+/* NutriFit 1.0 — small features that make daily logging faster */
+function recentFoodsV10(){
+  const box=$('recentList'); if(!box)return;
+  const names=[...new Set(log.slice().reverse().map(x=>x.food))].slice(0,5);
+  if(!names.length){box.innerHTML='<span class="recentempty">Tus alimentos recientes aparecerán aquí.</span>';return;}
+  box.innerHTML=names.map(n=>`<button class="recentpill" onclick="quickRecent('${n.replace(/'/g,"\\'")}')">↺ ${n}</button>`).join('');
+}
+function quickRecent(n){
+  const i=foods.findIndex(f=>f[0]===n);
+  if(i<0)return;
+  openFood();selectFood(i);
+}
+function duplicateLastMeal(){
+  if(!log.length){openFood();return;}
+  const last=log[log.length-1];
+  const same=log.filter(x=>x.meal===last.meal);
+  if(!same.length)return;
+  same.forEach(x=>{log.push({...x,id:Date.now()+Math.random()});});
+  localStorage.setItem('nf_log_v3',JSON.stringify(log));saveHistory();render();
+}
+function showTodayTip(){
+  const tips=[
+    'Intenta que cada comida principal tenga una fuente de proteína.',
+    'Si te quedan pocas kcal, prioriza alimentos saciantes y ricos en proteína.',
+    'Un vaso de agua antes de comer puede ayudarte a mantener una buena hidratación.',
+    'No hace falta clavar el objetivo todos los días: mira también la tendencia semanal.',
+    'Si entrenas hoy, puedes repartir la proteína entre varias comidas.'
+  ];
+  alert('💡 Consejo NutriFit\\n\\n'+tips[new Date().getDate()%tips.length]);
+}
+function editLoggedFood(id){
+  const x=log.find(a=>a.id===id); if(!x)return;
+  const g=prompt(`Cantidad de ${x.food} (gramos):`,Math.round(x.g));
+  if(g===null)return;
+  const grams=Number(g); if(!isFinite(grams)||grams<=0)return alert('Introduce una cantidad válida.');
+  const f=foods.find(a=>a[0]===x.food); if(!f)return;
+  const k=grams/100;
+  x.g=grams;x.kcal=f[1]*k;x.p=f[2]*k;x.c=f[3]*k;x.f=f[4]*k;
+  localStorage.setItem('nf_log_v3',JSON.stringify(log));saveHistory();render();
+}
+const oldRenderFoodRowsV10=render;
+render=function(){
+  oldRenderFoodRowsV10();
+  recentFoodsV10();
+};
