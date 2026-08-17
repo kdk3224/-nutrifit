@@ -42,3 +42,6 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 .recenttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.recenttop b{font-size:12px}.recenttop button{border:0;background:none;color:#18a866;font-weight:800;font-size:9px}
 #recentList{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px}.recentpill{white-space:nowrap;border:1px solid #e4ebe5;background:#f7faf7;border-radius:14px;padding:8px 10px;font-size:9px;color:#304037}
 .foodrow .rowedit{opacity:.8}
+
+.food small{display:block}.food em{display:block;font-size:8px;color:#8a938d;font-style:normal;margin-top:3px}
+.sourcebadge{font-size:9px;color:#748078;line-height:1.4;margin-top:7px}
