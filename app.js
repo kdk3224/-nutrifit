@@ -179,3 +179,42 @@ function openSponsor(){
 }
 const goV12Base=go;
 go=function(id){goV12Base(id);if(id==='tips')renderTipsV12();};
+
+const sponsorsV13=[
+ {id:1,name:'Tu marca aquí',status:'empty'},
+ {id:2,name:'Tu marca aquí',status:'empty'},
+ {id:3,name:'Tu marca aquí',status:'empty'},
+ {id:4,name:'Tu marca aquí',status:'empty'},
+ {id:5,name:'Tu marca aquí',status:'empty'},
+ {id:6,name:'Tu marca aquí',status:'empty'},
+ {id:7,name:'Tu marca aquí',status:'empty'},
+ {id:8,name:'Tu marca aquí',status:'empty'}
+];
+function renderProfileV13(){
+ const grid=$('sponsorGridV13');if(!grid)return;
+ const saved=JSON.parse(localStorage.getItem('nf_sponsors_v13')||'[]');
+ const merged=sponsorsV13.map(s=>saved.find(x=>x.id===s.id)||s);
+ grid.innerHTML=merged.map(s=>s.status==='active'
+ ? `<button class="sponsorSlot active" onclick="viewSponsor(${s.id})"><span class="sponsorLogo">${s.logo||'⭐'}</span><b>${s.name}</b><small>${s.hours||24} h restantes</small></button>`
+ : `<button class="sponsorSlot" onclick="openSponsorSlot(${s.id})"><span class="plusSponsor">＋</span><b>Patrocina este espacio</b><small>$1 · 24 horas</small></button>`).join('');
+ if(profile){
+   const g=$('profileGoalV13'),k=$('profileKcalV13'),p=$('profileProteinV13');
+   if(g)g.textContent=profile.goal==='lose'?'Perder peso':profile.goal==='gain'?'Ganar peso':'Mantener';
+   if(k)k.textContent=profile.kcal+' kcal';
+   if(p)p.textContent=profile.protein+' g';
+ }
+}
+function openSponsorSlot(id){
+ alert('⭐ NutriFit Sponsors\\n\\nEspacio #'+id+'\\n\\nPrecio: $1 durante 24 horas.\\n\\nEl cobro real se conectará después mediante un proveedor de pagos seguro.');
+}
+function viewSponsor(id){
+ const saved=JSON.parse(localStorage.getItem('nf_sponsors_v13')||'[]');
+ const s=saved.find(x=>x.id===id);if(!s)return;
+ alert('⭐ '+s.name+'\\n\\nPatrocinador NutriFit activo.');
+}
+function openProfileEdit(){
+ if(!profile){go('profile');return;}
+ alert('Puedes editar tus datos desde la sección de configuración de objetivos.');
+}
+const goV13Base=go;
+go=function(id){goV13Base(id);if(id==='profile')renderProfileV13();};
