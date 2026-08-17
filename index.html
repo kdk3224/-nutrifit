@@ -12,9 +12,13 @@
 <div class="water"><div><span>💧</span><div><b>Agua</b><small id="waterText">0 / 2,5 L</small></div></div><button onclick="addWater()">+ 250 ml</button><div class="waterbar"><i id="waterBar"></i></div></div>
 </section>
 
-<section id="diet" class="screen"><div class="pagehead"><div class="eyebrow">PLAN</div><h1>Mi dieta 🥗</h1><p>Planifica comidas y guarda tus recetas.</p><button class="primary" onclick="generateDay()">✨ Generar un día</button></div><div id="dayPlan"></div></section>
-
-<section id="training" class="screen"><div class="pagehead"><div class="eyebrow">MOVIMIENTO</div><h1>Entrenamiento 🏋️</h1><p>Una base de rutinas para empezar.</p></div><div class="workout"><h2>Full body · 30 min</h2><div>🏋️ Sentadilla · 3 × 10</div><div>💪 Flexiones · 3 × 8–12</div><div>🏋️ Remo · 3 × 10</div><div>🦵 Zancadas · 3 × 10</div><div>🔥 Plancha · 3 × 30 s</div><button class="ghost" onclick="alert('Rutina marcada como completada.')">✓ Completar entrenamiento</button></div></section>
+<section id="diet" class="screen">
+<div class="pagehead"><div class="eyebrow">PLAN SEMANAL</div><h1>Mi dieta 🥗</h1>
+<p>Elige, cambia y personaliza cada comida según tus gustos.</p>
+<div class="diet-actions"><button class="primary" onclick="generateWeek()">✨ Generar semana</button><button class="ghost" onclick="makeShoppingList()">🛒 Lista de compra</button></div></div>
+<div id="weekPlan"></div>
+<div id="shopping" class="shopping" hidden><div class="sectionhead"><h2>Lista de compra</h2><button onclick="copyShopping()">Copiar</button></div><div id="shoppingList"></div></div>
+</section><section id="training" class="screen"><div class="pagehead"><div class="eyebrow">MOVIMIENTO</div><h1>Entrenamiento 🏋️</h1><p>Una base de rutinas para empezar.</p></div><div class="workout"><h2>Full body · 30 min</h2><div>🏋️ Sentadilla · 3 × 10</div><div>💪 Flexiones · 3 × 8–12</div><div>🏋️ Remo · 3 × 10</div><div>🦵 Zancadas · 3 × 10</div><div>🔥 Plancha · 3 × 30 s</div><button class="ghost" onclick="alert('Rutina marcada como completada.')">✓ Completar entrenamiento</button></div></section>
 
 <section id="progress" class="screen"><div class="pagehead"><div class="eyebrow">EVOLUCIÓN</div><h1>Mi progreso 📈</h1><p>Consulta tu actividad registrada.</p></div><div class="stats"><div><b id="todayKcal">0</b><small>kcal hoy</small></div><div><b id="todayFoods">0</b><small>alimentos</small></div><div><b id="favCount">0</b><small>favoritos</small></div></div><div class="history" id="history"></div></section>
 
@@ -27,4 +31,4 @@
 <nav><button class="active" data-page="home" onclick="go('home')">⌂<span>Inicio</span></button><button data-page="diet" onclick="go('diet')">🥗<span>Dieta</span></button><button data-page="training" onclick="go('training')">🏋️<span>Entreno</span></button><button data-page="progress" onclick="go('progress')">📈<span>Progreso</span></button><button data-page="chat" onclick="go('chat')">🤖<span>NutriIA</span></button></nav>
 
 <div id="modal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><div class="eyebrow">REGISTRAR</div><h2>Añadir alimento</h2><input id="search" class="search" placeholder="🔎 Busca pollo, arroz, avena..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><div class="selectedfood"><b id="foodName"></b><small id="foodInfo"></small></div><button class="favoriteBtn" onclick="toggleFavorite()">☆ Favorito</button><label>Cantidad (g)<input id="amount" type="number" value="100"></label><label>Comida<select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select></label><button class="primary" onclick="addFood()">Añadir a mi día</button></div></div></div>
-<script src="app.js"></script></body></html>
+<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script src="app.js"></script></body></html>
