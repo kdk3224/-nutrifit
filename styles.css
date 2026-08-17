@@ -77,3 +77,13 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 .scannerTileVFIX{background:#effaf4!important;border-color:#cfeedd!important}.pantryTileVFIX{background:#f5f8ff!important;border-color:#dfe7fa!important}.sponsorTileVFIX{background:#fffaf0!important;border-color:#eddfbe!important}
 .scrollcueFIX{text-align:center;color:#8a948d;font-size:8px;margin:-2px 0 8px}
 @media(max-width:370px){.quicktileVFIX{min-height:104px!important;padding-left:3px!important;padding-right:3px!important}.quicktileVFIX b{font-size:8px!important}}
+
+/* V2 layout — new actions immediately visible below the calorie hero */
+.quickgrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;width:100%!important;margin:12px 0 16px!important}
+.quicktileVFIX{min-height:112px!important;min-width:0!important;border:1px solid #e2e9e3!important;border-radius:20px!important;background:#fff!important;padding:12px 6px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;box-shadow:0 8px 20px rgba(22,51,27,.07)!important}
+.quicktileVFIX>span{font-size:25px!important;line-height:1!important;margin-bottom:8px!important}
+.quicktileVFIX b{font-size:9px!important;text-align:center!important}
+.quicktileVFIX small{font-size:7px!important;color:#7e8981!important;text-align:center!important;margin-top:4px!important;line-height:1.25!important}
+.scannerTileVFIX{background:#effaf4!important;border-color:#cfeedd!important}
+.pantryTileVFIX{background:#f5f8ff!important;border-color:#dfe7fa!important}
+.sponsorTileVFIX{background:#fffaf0!important;border-color:#eddfbe!important}
