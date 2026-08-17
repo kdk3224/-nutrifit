@@ -218,3 +218,23 @@ function openProfileEdit(){
 }
 const goV13Base=go;
 go=function(id){goV13Base(id);if(id==='profile')renderProfileV13();};
+
+const sponsorsV14=Array.from({length:8},(_,i)=>({id:i+1}));
+function renderSponsorsV14(){
+ const box=$('sponsorGridV14'); if(!box)return;
+ const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]');
+ box.innerHTML=sponsorsV14.map(s=>{
+   const a=saved.find(x=>x.id===s.id);
+   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.logo||'⭐'}</span><b>${a.name}</b><small>Patrocinador · 24 h</small></button>`;
+   return `<button class="sponsorSlotV14" onclick="buySponsorV14(${s.id})"><span class="plusSponsorV14">＋</span><b>Patrocina este espacio</b><small>$1 · 24 horas</small></button>`;
+ }).join('');
+}
+function buySponsorV14(id){
+ alert('⭐ NutriFit Sponsors\\n\\nEspacio #'+id+' · $1 durante 24 horas.\\n\\nEl cobro real se conectará cuando integremos Stripe/PayPal.');
+}
+function showSponsorV14(id){
+ const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]');
+ const a=saved.find(x=>x.id===id); if(a) alert('⭐ '+a.name+'\\n\\nPatrocinador NutriFit activo.');
+}
+const goV14Base=go;
+go=function(id){goV14Base(id);if(id==='profile')setTimeout(renderSponsorsV14,0);};
