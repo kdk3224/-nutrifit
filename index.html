@@ -11,7 +11,17 @@
       <button onclick="duplicateLastMeal()">↻<b>Repetir</b><small>última comida</small></button>
       <button onclick="showTodayTip()">💡<b>Consejo</b><small>para hoy</small></button>
       <button onclick="addWater()">💧<b>+250 ml</b><small>hidrátate</small></button>
-    </div><div class="quickgrid"><button onclick="openFood()">➕<b>Añadir</b><small>Comida</small></button><button onclick="go('chat')">🤖<b>NutriIA</b><small>Consejo</small></button><button onclick="go('diet')">🥗<b>Mi dieta</b><small>Plan</small></button><button onclick="go('training')">🏋️<b>Entreno</b><small>Hoy</small></button></div><button class="addmain" onclick="openFood()"><span>＋</span><div><b>Añadir alimento</b><small>Busca, pesa y registra</small></div><strong>›</strong></button>
+    </div><div class="quickgrid">
+  <button class="quicktile scannerTile" type="button" onclick="openScannerV15()">
+    <span class="quickicon">📷</span><b>Escanear</b><small>Código de barras</small>
+  </button>
+  <button class="quicktile discoverTile" type="button" onclick="openPantryV15()">
+    <span class="quickicon">🧊</span><b>Mi despensa</b><small>¿Qué tengo en casa?</small>
+  </button>
+  <button class="quicktile sponsorTile" type="button" onclick="go('profile');setTimeout(renderSponsorsV14,50)">
+    <span class="quickicon">⭐</span><b>NutriFit Sponsors</b><small>Patrocinadores de hoy</small>
+  </button>
+</div><button class="addmain" onclick="openFood()"><span>＋</span><div><b>Añadir alimento</b><small>Busca, pesa y registra</small></div><strong>›</strong></button>
 <div class="insight"><div class="insighticon">💡</div><div><b id="insightTitle">Tu resumen de hoy</b><p id="insightText">Registra tu primera comida y NutriFit te dará recomendaciones.</p></div></div><div class="recentbox" id="recentFoods"><div class="recenttop"><b>Volver a comer</b><button onclick="openFood()">Ver todos →</button></div><div id="recentList"></div></div>
     <div class="sectionhead"><h2>Comidas</h2><span id="foodCount">0 alimentos</span></div><div id="meals"></div>
 <div class="water"><div><span>💧</span><div><b>Agua</b><small id="waterText">0 / 2,5 L</small></div></div><button onclick="addWater()">+ 250 ml</button><div class="waterbar"><i id="waterBar"></i></div></div>
@@ -52,4 +62,22 @@
 <nav><button class="active" data-page="home" onclick="go('home')">⌂<span>Inicio</span></button><button data-page="diet" onclick="go('diet')">🥗<span>Dieta</span></button><button data-page="training" onclick="go('training')">🏋️<span>Entreno</span></button><button data-page="progress" onclick="go('progress')">📈<span>Progreso</span></button><button data-page="tips" onclick="go('tips')">💡<span>Consejos</span></button><button data-page="chat" onclick="go('chat')">🤖<span>NutriIA</span></button><button data-page="profile" onclick="go('profile')">👤<span>Perfil</span></button></nav>
 
 <div id="modal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><div class="eyebrow">REGISTRAR</div><h2>Añadir alimento</h2><input id="search" class="search" placeholder="🔎 Busca pollo, arroz, avena..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><div class="selectedfood"><b id="foodName"></b><small id="foodInfo"></small></div><button class="favoriteBtn" onclick="toggleFavorite()">☆ Favorito</button><label>Cantidad (g)<input id="amount" type="number" value="100"></label><label>Comida<select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select></label><button class="primary" onclick="addFood()">Añadir a mi día</button></div></div></div>
-<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script src="app.js"></script></body></html>
+<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script src="app.js"></script><div class="modal" id="scannerModalV15">
+  <div class="modalbox scannerBoxV15">
+    <button class="modalclose" onclick="closeScannerV15()">×</button>
+    <div class="scannerIconV15">📷</div>
+    <h2>Escanear alimento</h2>
+    <p>Apunta la cámara al código de barras del producto.</p>
+    <button class="primaryV15" onclick="startScannerV15()">Abrir cámara</button>
+    <small class="scannerNoteV15">En esta versión dejamos preparada la interfaz. La lectura real del código de barras se conecta después a una base de alimentos.</small>
+  </div>
+</div>
+<div class="modal" id="pantryModalV15">
+  <div class="modalbox pantryBoxV15">
+    <button class="modalclose" onclick="closePantryV15()">×</button>
+    <h2>🧊 Mi despensa</h2>
+    <p>Guarda lo que tienes en casa y NutriFit te propondrá comidas con ello.</p>
+    <div id="pantryListV15"></div>
+    <button class="primaryV15" onclick="addPantryItemV15()">＋ Añadir alimento</button>
+  </div>
+</div></body></html>
