@@ -94,3 +94,30 @@ function updateV6(){
  if($('insightText')){let t=totals();if(!profile){$('insightTitle').textContent=log.length?'Buen comienzo 🌱':'Tu primer paso';$('insightText').textContent=log.length?'Configura tus objetivos para recibir recomendaciones personalizadas.':'Registra una comida y empieza a construir tu día.'}else if(t.p<profile.protein){$('insightTitle').textContent='Un empujón de proteína 💪';$('insightText').textContent=`Te faltan ${Math.max(0,Math.round(profile.protein-t.p))} g para tu objetivo de hoy.`}else{$('insightTitle').textContent='Vas muy bien ✨';$('insightText').textContent=`Te quedan aproximadamente ${Math.max(0,Math.round(profile.kcal-t.k))} kcal.`}}
  if($('microgrid')){let t=totals(),v=[['Proteína',t.p,profile?.protein||100,'g'],['Hidratos',t.c,profile?.carb||100,'g'],['Grasas',t.f,profile?.fat||70,'g'],['Saturadas',0,20,'g'],['Azúcares',0,50,'g'],['Fibra',0,30,'g'],['Sal',0,5,'g'],['Calorías',t.k,profile?.kcal||2000,'kcal']];$('microgrid').innerHTML=v.map(x=>`<div class="microcard"><b>${Math.round(x[1])} ${x[3]}</b><span>${x[0]} · objetivo ${x[2]} ${x[3]}</span><div class="microbar"><i style="width:${Math.min(100,x[1]/x[2]*100)}%"></i></div></div>`).join('')}}
 const renderV6Base=render;render=function(){renderV6Base();updateV6();}
+
+let pendingMealV7=null;
+function openFoodForMeal(meal){
+  pendingMealV7=meal;
+  openFood();
+}
+function decorateMealButtonsV7(){
+  const names=['Desayuno','Comida','Merienda','Cena','Snack'];
+  document.querySelectorAll('.meal').forEach(card=>{
+    if(card.querySelector('.mealAddBtn')) return;
+    const txt=(card.textContent||'').trim();
+    const meal=names.find(n=>txt.includes(n));
+    if(!meal)return;
+    const b=document.createElement('button');
+    b.className='mealAddBtn';
+    b.type='button';
+    b.textContent='＋';
+    b.setAttribute('aria-label','Añadir a '+meal);
+    b.onclick=function(){openFoodForMeal(meal)};
+    card.appendChild(b);
+  });
+}
+const renderV7Base=render;
+render=function(){
+  renderV7Base();
+  setTimeout(decorateMealButtonsV7,0);
+};
