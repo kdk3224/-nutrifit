@@ -99,5 +99,8 @@ let pendingMealV7=null;
 function openFoodForMeal(meal){
   pendingMealV7=meal;
   openFood();
-  setTimeout(()=>{ const sel=$('meal'); if(sel) sel.value=meal; },60);
+  setTimeout(()=>{
+    const sel=$('meal');
+    if(sel) sel.value=meal;
+  },60);
 }
