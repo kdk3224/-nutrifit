@@ -1,6 +1,39 @@
-<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#19a463"><link rel="manifest" href="manifest.json"><title>NutriFit</title><link rel="stylesheet" href="styles.css"></head><body><div id="app">
-<section id="welcome" class="screen active"><div class="logo">NF</div><div class="eyebrow">NUTRIFIT</div><h1>Tu nutrición y entrenamiento,<span> gratis.</span></h1><p>Controla tus comidas, calorías y macronutrientes. Puedes usarlo sin introducir datos personales.</p><button class="primary" onclick="go('home')">Empezar</button><button class="link" onclick="go('profile')">Personalizar objetivos</button></section>
-<section id="profile" class="screen"><button class="back" onclick="go('welcome')">‹ Atrás</button><div class="eyebrow">PERFIL</div><h2>Personaliza tus objetivos</h2><div class="grid"><label>Edad<input id="age" type="number"></label><label>Sexo<select id="sex"><option value="m">Hombre</option><option value="f">Mujer</option></select></label><label>Altura (cm)<input id="height" type="number"></label><label>Peso (kg)<input id="weight" type="number" step=".1"></label></div><label>Actividad<select id="activity"><option value="1.2">Sedentario</option><option value="1.375">Ligera</option><option value="1.55" selected>Moderada</option><option value="1.725">Alta</option></select></label><label>Objetivo<select id="goal"><option value="lose">Perder grasa</option><option value="maintain">Mantener</option><option value="gain">Ganar músculo</option></select></label><button class="primary" onclick="saveProfile()">Guardar y calcular</button></section>
-<section id="home" class="screen"><header><div><div class="eyebrow">HOY</div><h2>Tu día</h2></div><button class="avatar" onclick="go('profile')">NF</button></header><div class="calorie-card"><div class="ring"><strong id="kcal">0</strong><small>kcal</small></div><div><b id="remaining">Añade alimentos</b><span id="targetText">Objetivo no configurado</span></div></div><div class="macros"><div><b id="p">0 g</b><span>Proteína</span><i id="pb"></i></div><div><b id="c">0 g</b><span>Carbohidratos</span><i id="cb"></i></div><div><b id="f">0 g</b><span>Grasas</span><i id="fb"></i></div></div><button class="add" onclick="openFood()">＋ Registrar alimento</button><div id="meals"></div><nav><button class="active">⌂<span>Inicio</span></button><button onclick="alert('La sección Dieta se añadirá en la siguiente versión.')">🥗<span>Dieta</span></button><button onclick="alert('La sección Entrenamiento se añadirá en la siguiente versión.')">🏋️<span>Entreno</span></button><button onclick="alert('El progreso se añadirá en la siguiente versión.')">📈<span>Progreso</span></button><button onclick="go('profile')">👤<span>Perfil</span></button></nav></section>
-<div id="foodModal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><h2>Registrar alimento</h2><input id="search" placeholder="🔎 Buscar alimento..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><h3 id="foodName"></h3><label>Cantidad (g)<input id="amount" type="number" value="100"></label><select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select><button class="primary" onclick="addFood()">Añadir</button></div></div></div>
-</div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20b26b"><link rel="manifest" href="manifest.json"><title>NutriFit</title><link rel="stylesheet" href="styles.css">
+</head><body><div id="app">
+<header class="topbar"><div class="brand"><div class="brandmark">NF</div><div><b>NutriFit</b><small>Tu día, a tu manera</small></div></div><button class="iconbtn" onclick="go('profile')">⚙️</button></header>
+
+<main>
+<section id="home" class="screen active">
+<div class="hello"><div><div class="eyebrow">HOY · <span id="date"></span></div><h1>Vamos a por ello <span>🔥</span></h1></div></div>
+<div class="hero">
+<div class="herohead"><div><span>Calorías</span><strong><span id="kcal">0</span><em id="targetKcal"> / —</em></strong></div><div class="donut"><div><b id="kcalPct">0%</b><small>del objetivo</small></div></div></div>
+<div class="remaining" id="remaining">Añade alimentos para empezar</div>
+</div>
+<div class="macro-title"><h2>Macros de hoy</h2><button onclick="go('profile')">Objetivos</button></div>
+<div class="macros">
+<div class="macro"><div class="macroicon protein">🥩</div><b id="p">0 g</b><span>Proteína</span><div class="bar"><i id="pb"></i></div><small id="pt">—</small></div>
+<div class="macro"><div class="macroicon carb">🍚</div><b id="c">0 g</b><span>Carbohidratos</span><div class="bar"><i id="cb"></i></div><small id="ct">—</small></div>
+<div class="macro"><div class="macroicon fat">🥑</div><b id="f">0 g</b><span>Grasas</span><div class="bar"><i id="fb"></i></div><small id="ft">—</small></div>
+</div>
+<button class="addmain" onclick="openFood()"><span>＋</span><div><b>Añadir alimento</b><small>Busca, pesa y registra</small></div><strong>›</strong></button>
+<div class="sectionhead"><h2>Comidas</h2><span id="foodCount">0 alimentos</span></div><div id="meals"></div>
+<div class="water"><div><span>💧</span><div><b>Agua</b><small id="waterText">0 / 2,5 L</small></div></div><button onclick="addWater()">+ 250 ml</button><div class="waterbar"><i id="waterBar"></i></div></div>
+</section>
+
+<section id="diet" class="screen"><div class="pagehead"><div class="eyebrow">PLAN</div><h1>Mi dieta 🥗</h1><p>Tu menú se construirá según tus objetivos y preferencias.</p></div><div class="coming"><span>✨</span><h2>Próximamente</h2><p>En V0.3 añadiremos dietas semanales, recetas y sustituciones inteligentes.</p></div></section>
+<section id="training" class="screen"><div class="pagehead"><div class="eyebrow">MOVIMIENTO</div><h1>Entrenamiento 🏋️</h1><p>Rutinas adaptadas a tu objetivo.</p></div><div class="coming"><span>💪</span><h2>Próximamente</h2><p>Rutinas para casa y gimnasio, con series, repeticiones y descansos.</p></div></section>
+<section id="progress" class="screen"><div class="pagehead"><div class="eyebrow">EVOLUCIÓN</div><h1>Mi progreso 📈</h1><p>Guarda tus datos y observa tu evolución.</p></div><div class="coming"><span>🚀</span><h2>Próximamente</h2><p>Historial de peso, medidas, gráficas y objetivos.</p></div></section>
+<section id="profile" class="screen"><div class="pagehead"><div class="eyebrow">PERFIL</div><h1>Mis objetivos 🎯</h1><p>Personaliza tus metas. También puedes usar NutriFit sin introducir datos.</p></div>
+<div class="profilecard"><div class="profilegrid"><label>Edad<input id="age" type="number" placeholder="26"></label><label>Sexo<select id="sex"><option value="m">Hombre</option><option value="f">Mujer</option></select></label><label>Altura<input id="height" type="number" placeholder="175"></label><label>Peso<input id="weight" type="number" step=".1" placeholder="70"></label></div>
+<label>Actividad<select id="activity"><option value="1.2">Sedentario</option><option value="1.375">Ligera</option><option value="1.55" selected>Moderada</option><option value="1.725">Alta</option></select></label>
+<label>Objetivo<select id="goal"><option value="lose">🔥 Perder grasa</option><option value="maintain">⚖️ Mantener</option><option value="gain">💪 Ganar músculo</option></select></label>
+<button class="primary" onclick="saveProfile()">Calcular mis objetivos</button><button class="ghost" onclick="clearProfile()">Usar sin objetivos</button></div></section>
+</main>
+
+<nav><button class="active" data-page="home" onclick="go('home')">⌂<span>Inicio</span></button><button data-page="diet" onclick="go('diet')">🥗<span>Dieta</span></button><button data-page="training" onclick="go('training')">🏋️<span>Entreno</span></button><button data-page="progress" onclick="go('progress')">📈<span>Progreso</span></button><button data-page="profile" onclick="go('profile')">👤<span>Perfil</span></button></nav>
+
+<div id="modal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><div class="eyebrow">REGISTRAR</div><h2>Añadir alimento</h2><input id="search" class="search" placeholder="🔎  Busca pollo, arroz, avena..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><div class="selectedfood"><b id="foodName"></b><small id="foodInfo"></small></div><label>Cantidad (g)<input id="amount" type="number" value="100"></label><label>Comida<select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select></label><button class="primary" onclick="addFood()">Añadir a mi día</button></div></div></div>
+<script src="app.js"></script></body></html>
