@@ -152,3 +152,30 @@ render=function(){
   oldRenderFoodRowsV10();
   recentFoodsV10();
 };
+
+const tipsV12=[
+ {cat:'comida',title:'Construye el plato',text:'Una forma sencilla es combinar una fuente de proteína, verduras y una fuente de hidratos ajustada a tu objetivo.'},
+ {cat:'proteina',title:'Reparte la proteína',text:'En lugar de concentrarla toda en una comida, intenta repartirla entre desayuno, comida, merienda y cena.'},
+ {cat:'habitos',title:'Mira la semana, no un día',text:'Un día por encima o por debajo de tus kcal no define tu progreso. Observa la tendencia de varios días.'},
+ {cat:'comida',title:'Hazlo fácil',text:'Ten 2 o 3 comidas rápidas que sepas preparar y que encajen con tus objetivos para los días con poco tiempo.'},
+ {cat:'proteina',title:'No olvides las cantidades',text:'Una comida puede ser saludable y aun así tener muchas o pocas kcal. Las cantidades importan tanto como la elección.'},
+ {cat:'habitos',title:'Hidratación',text:'Mantén agua disponible durante el día y usa el contador de NutriFit para crear el hábito.'},
+ {cat:'comida',title:'Más fibra',text:'Frutas, verduras, legumbres, avena y cereales integrales ayudan a aumentar la fibra de la dieta.'},
+ {cat:'habitos',title:'Planifica antes de tener hambre',text:'Dejar preparada una opción equilibrada reduce la probabilidad de acabar eligiendo cualquier cosa por falta de tiempo.'}
+];
+function renderTipsV12(cat='todos'){
+ const box=$('tipsList'); if(!box)return;
+ const arr=cat==='todos'?tipsV12:tipsV12.filter(x=>x.cat===cat);
+ box.innerHTML=arr.map(x=>`<article class="tipcard"><span>${x.cat==='proteina'?'💪':x.cat==='comida'?'🍽️':'🌱'}</span><div><b>${x.title}</b><p>${x.text}</p></div></article>`).join('');
+ const t=tipsV12[new Date().getDate()%tipsV12.length];
+ $('tipTitle').textContent=t.title;$('tipMain').textContent=t.text;
+}
+function filterTips(cat,btn){
+ document.querySelectorAll('.tipfilter').forEach(x=>x.classList.remove('active'));
+ if(btn)btn.classList.add('active');renderTipsV12(cat);
+}
+function openSponsor(){
+ alert('⭐ Patrocinio NutriFit\\n\\nEl espacio está diseñado para un patrocinio de $1 durante 24 horas.\\n\\nPara cobrar pagos reales necesitaremos conectar Stripe/PayPal y un pequeño backend seguro. Esta versión deja preparada la zona de patrocinadores sin fingir que el pago ya está conectado.');
+}
+const goV12Base=go;
+go=function(id){goV12Base(id);if(id==='tips')renderTipsV12();};

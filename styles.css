@@ -45,3 +45,9 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 
 .food small{display:block}.food em{display:block;font-size:8px;color:#8a938d;font-style:normal;margin-top:3px}
 .sourcebadge{font-size:9px;color:#748078;line-height:1.4;margin-top:7px}
+
+/* NutriFit V1.2 — Consejos + patrocinio */
+.tiphero{display:flex;gap:13px;align-items:flex-start;background:linear-gradient(135deg,#123b28,#1c6a43);color:#fff;border-radius:23px;padding:17px;box-shadow:0 14px 30px #123b2820}.tiphero>span{font-size:26px}.tiphero b{font-size:14px}.tiphero p{margin:5px 0 0;font-size:10px;line-height:1.5;color:#d9f4e4}
+.tipfilters{display:flex;gap:7px;overflow-x:auto;padding:15px 0 10px}.tipfilter{white-space:nowrap;border:1px solid #e2e9e3;background:#fff;border-radius:15px;padding:8px 11px;font-size:9px;color:#58635c}.tipfilter.active{background:#eaf8f0;border-color:#bfe8d0;color:#117d4a;font-weight:800}
+.tipsList{display:grid;gap:9px}.tipcard{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e4ebe5;border-radius:19px;padding:14px;box-shadow:0 6px 18px #16331b07}.tipcard>span{width:34px;height:34px;border-radius:11px;background:#f0f7f2;display:grid;place-items:center;flex:none}.tipcard b{font-size:12px}.tipcard p{font-size:10px;line-height:1.5;color:#77817a;margin:4px 0 0}
+.sponsorCard{display:flex;gap:10px;align-items:center;margin:16px 0 25px;background:#fff9ed;border:1px solid #f1dfb9;border-radius:20px;padding:13px}.sponsorIcon{width:35px;height:35px;border-radius:12px;background:#fff0c8;display:grid;place-items:center}.sponsorCard>div:nth-child(2){flex:1}.sponsorCard b{font-size:11px}.sponsorCard p{font-size:9px;color:#7c7568;margin:3px 0 0}.sponsorCard button{border:0;border-radius:12px;background:#162d20;color:#fff;padding:9px 11px;font-size:9px;font-weight:800}
