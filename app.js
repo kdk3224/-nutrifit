@@ -88,3 +88,31 @@ function renderShoppingV4(){if(!shopV4)return;$('shoppingList').innerHTML='<div 
 async function copyShoppingV4(){if(!shopV4)return;let text='Lista NutriFit\\n'+shopV4.map(x=>'• '+x).join('\\n');try{await navigator.clipboard.writeText(text);alert('Lista copiada.')}catch(e){alert(text)}}
 
 function makeShoppingList(){makeShoppingListV4()} function renderShopping(){renderShoppingV4()} function copyShopping(){copyShoppingV4()}
+
+// V0.5: referencia nutricional española. Los productos comerciales son marcadores hasta importar el dataset oficial AESAN.
+const sourceText={generic:'Referencia AESAN/BEDCA · por 100 g/ml.',brand:'Producto comercial · pendiente de ficha oficial.'};
+const foodsV5=[
+{name:'Pechuga de pollo, cruda',brand:'Genérico',type:'generic',k:120,p:22,c:0,f:3,sat:.9,sugar:0,fiber:0,salt:.15},
+{name:'Arroz blanco, cocido',brand:'Genérico',type:'generic',k:130,p:2.7,c:28,f:.3,sat:.1,sugar:0,fiber:.4,salt:0},
+{name:'Avena, cruda',brand:'Genérico',type:'generic',k:389,p:16.9,c:66.3,f:6.9,sat:1.2,sugar:.9,fiber:10.6,salt:0},
+{name:'Huevo de gallina',brand:'Genérico',type:'generic',k:143,p:12.6,c:.7,f:9.5,sat:3.1,sugar:.4,fiber:0,salt:.36},
+{name:'Plátano',brand:'Genérico',type:'generic',k:89,p:1.1,c:22.8,f:.3,sat:.1,sugar:12.2,fiber:2.6,salt:0},
+{name:'Patata, cocida',brand:'Genérico',type:'generic',k:87,p:1.9,c:20,f:.1,sat:0,sugar:.9,fiber:1.8,salt:.01},
+{name:'Lentejas, cocidas',brand:'Genérico',type:'generic',k:116,p:9,c:20,f:.4,sat:.1,sugar:1.8,fiber:7.9,salt:.01},
+{name:'Salmón',brand:'Genérico',type:'generic',k:208,p:20,c:0,f:13,sat:3.1,sugar:0,fiber:0,salt:.13},
+{name:'Tomate',brand:'Genérico',type:'generic',k:18,p:.9,c:3.9,f:.2,sat:0,sugar:2.6,fiber:1.2,salt:.01},
+{name:'Almendras',brand:'Genérico',type:'generic',k:579,p:21,c:22,f:50,sat:3.8,sugar:4.4,fiber:12.5,salt:0},
+{name:'Leche semidesnatada',brand:'Genérico',type:'generic',k:46,p:3.3,c:4.8,f:1.6,sat:1,sugar:4.8,fiber:0,salt:.1},
+{name:'Merluza',brand:'Genérico',type:'generic',k:89,p:18,c:0,f:1.8,sat:.4,sugar:0,fiber:0,salt:.16}];
+const brandsV5=[
+{name:'Pizza refrigerada · producto',brand:'Hacendado',type:'brand',demo:true},
+{name:'Yogur natural · producto',brand:'Auchan',type:'brand',demo:true},
+{name:'Pechuga de pavo · producto',brand:'Carrefour',type:'brand',demo:true},
+{name:'Atún al natural · producto',brand:'DIA',type:'brand',demo:true},
+{name:'Plato preparado · producto',brand:'Eroski',type:'brand',demo:true}];
+let foodTabV5='all',selectedV5=null;
+function setFoodTab(tab,btn){foodTabV5=tab;document.querySelectorAll('.foodtab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderFoods();}
+function visibleFoodsV5(){const q=($('search').value||'').toLowerCase();return [...foodsV5,...brandsV5].filter(x=>(foodTabV5==='all'||x.type===foodTabV5)&&(`${x.name} ${x.brand}`).toLowerCase().includes(q));}
+function renderFoods(){const arr=visibleFoodsV5();$('foodList').innerHTML=arr.map((f,i)=>`<div class="food" onclick="selectV5(${i})"><b>${f.name}${f.brand!=='Genérico'?' · '+f.brand:''}</b><small>${f.demo?'⚠️ Producto de ejemplo: falta importar su ficha oficial.':`${f.k} kcal · ${f.p} g proteína · ${f.c} g hidratos · ${f.f} g grasa / 100 g`}</small></div>`).join('')||'<p>Sin resultados.</p>';}
+function selectV5(i){const f=visibleFoodsV5()[i];if(!f)return;if(f.demo){alert('Este producto es un marcador de interfaz. En la versión con dataset oficial aparecerán sus valores reales.');return;}selectedV5=f;selected=[f.name,f.k,f.p,f.c,f.f];$('foodName').textContent=f.name;$('foodInfo').textContent=`${f.k} kcal · ${f.p} g proteína · ${f.c} g hidratos · ${f.f} g grasa / 100 g`;$('foodSource').textContent=sourceText[f.type];$('amountBox').hidden=false;$('nutrientGrid').innerHTML=[['Energía',f.k+' kcal'],['Proteína',f.p+' g'],['Hidratos',f.c+' g'],['Grasas',f.f+' g'],['Saturadas',f.sat+' g'],['Azúcares',f.sugar+' g'],['Fibra',f.fiber+' g'],['Sal',f.salt+' g']].map(x=>`<div><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');}
+const originalOpenFood=openFood;openFood=function(){originalOpenFood();setTimeout(()=>{foodTabV5='all';document.querySelectorAll('.foodtab').forEach((b,i)=>b.classList.toggle('active',i===0));renderFoods();},80)};
