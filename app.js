@@ -259,10 +259,10 @@ function addPantryItemV15(){
 function removePantryItemV15(i){pantryV15.splice(i,1);localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();}
 
 function initWelcomeOnceV2(){
- const el=document.getElementById('welcomeOnceV2'); if(!el)return;
- if(localStorage.getItem('nf_welcome_seen_v2')){el.remove();return;}
+ const el=document.getElementById('welcomeOnceV4'); if(!el)return;
+ if(localStorage.getItem('nf_welcome_seen_v4')){el.remove();return;}
  let sy=null;
- const finish=()=>{if(!el.isConnected)return;el.classList.add('welcomeHideV2');localStorage.setItem('nf_welcome_seen_v2','1');setTimeout(()=>el.remove(),450)};
+ const finish=()=>{if(!el.isConnected)return;el.classList.add('welcomeHideV4');localStorage.setItem('nf_welcome_seen_v4','1');setTimeout(()=>el.remove(),450)};
  el.addEventListener('touchstart',e=>sy=e.touches[0].clientY,{passive:true});
  el.addEventListener('touchend',e=>{if(sy!==null && sy-e.changedTouches[0].clientY>60)finish();sy=null},{passive:true});
  el.querySelector('.welcomeSwipeV2')?.addEventListener('click',finish);
