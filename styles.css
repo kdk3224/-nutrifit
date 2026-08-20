@@ -99,7 +99,7 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 
 .welcomeV4Hint{font-size:11px;font-weight:800;color:#26372e;margin:0 0 10px}
 
-/* V6 — the three new actions occupy the original lower 3-card row */
+/* V8 — preserve the blue row and place the NEW content underneath it. */
 .quickgrid{
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -109,10 +109,29 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 }
 .quicktileVFIX{
   min-height:86px!important;
+  height:auto!important;
+  border-radius:20px!important;
+  padding:10px 6px!important;
+  box-sizing:border-box!important;
+}
+.newFeaturesV8{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0 0 14px!important;
+}
+.newFeaturesV8 button{
+  min-height:76px!important;
+  border:1px solid #e3e9e4!important;
+  background:#fff!important;
   border-radius:18px!important;
   padding:9px 5px!important;
-  box-shadow:none!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
 }
-.quicktileVFIX>span{font-size:21px!important;line-height:1!important;margin-bottom:5px!important}
-.quicktileVFIX b{font-size:8px!important;text-align:center!important;line-height:1.15!important}
-.quicktileVFIX small{font-size:6.5px!important;color:#7e8981!important;text-align:center!important;margin-top:3px!important;line-height:1.2!important}
+.newFeaturesV8 span{font-size:21px!important;line-height:1!important;margin-bottom:5px!important}
+.newFeaturesV8 b{font-size:8px!important;line-height:1.15!important}
+.newFeaturesV8 small{font-size:6.5px!important;color:#7c8780!important;margin-top:3px!important;text-align:center!important}

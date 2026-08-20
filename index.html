@@ -6,15 +6,24 @@
 <section id="home" class="screen active"><div class="hello"><div><div class="eyebrow">HOY · <span id="date"></span></div><h1>Tu día empieza aquí ✨</h1><p class="subhello">Pequeños pasos. Grandes cambios.</p></div><div class="streak"><b>🔥 <span id="streak">1</span></b><small>días seguidos</small></div></div>
 <div class="hero"><div class="herohead"><div><span>Calorías</span><strong><span id="kcal">0</span><em id="targetKcal"> / —</em></strong></div><div class="donut"><div><b id="kcalPct">—</b><small>objetivo</small></div></div></div><div class="remaining" id="remaining">Añade alimentos para empezar</div><button class="detailbtn" onclick="go('progress')">Ver mi resumen completo →</button></div>
 
-<div class="macro-title"><h2>Macros de hoy</h2><button onclick="go('profile')">Objetivos</button></div>
+<div class="scrollcueFIX">Desliza para ver el resto de tu día ↓</div><div class="macro-title"><h2>Macros de hoy</h2><button onclick="go('profile')">Objetivos</button></div>
 <div class="macros"><div class="macro"><div class="macroicon">🥩</div><b id="p">0 g</b><span>Proteína</span><div class="bar"><i id="pb"></i></div><small id="pt">Sin objetivo</small></div><div class="macro"><div class="macroicon">🍚</div><b id="c">0 g</b><span>Carbohidratos</span><div class="bar"><i id="cb"></i></div><small id="ct">Sin objetivo</small></div><div class="macro"><div class="macroicon">🥑</div><b id="f">0 g</b><span>Grasas</span><div class="bar"><i id="fb"></i></div><small id="ft">Sin objetivo</small></div></div>
-<div class="quickgrid">
+<div class="smartstrip">
+      <button onclick="duplicateLastMeal()">↻<b>Repetir</b><small>última comida</small></button>
+      <button onclick="showTodayTip()">💡<b>Consejo</b><small>para hoy</small></button>
+      <button onclick="addWater()">💧<b>+250 ml</b><small>hidrátate</small></button>
+    </div><button class="addmain" onclick="openFood()"><span>＋</span><div><b>Añadir alimento</b><small>Busca, pesa y registra</small></div><strong>›</strong></button>
+<div class="insight"><div class="insighticon">💡</div><div><b id="insightTitle">Tu resumen de hoy</b><p id="insightText">Registra tu primera comida y NutriFit te dará recomendaciones.</p></div></div><div class="recentbox" id="recentFoods"><div class="recenttop"><b>Volver a comer</b><button onclick="openFood()">Ver todos →</button></div><div id="recentList"></div></div>
+    <div class="sectionhead"><div class="quickgrid">
 <button class="quicktileVFIX scannerTileVFIX" type="button" onclick="openScannerV15()"><span>📷</span><b>Escanear alimento</b><small>Código de barras</small></button>
 <button class="quicktileVFIX pantryTileVFIX" type="button" onclick="openPantryV15()"><span>🧊</span><b>Mi despensa</b><small>Usa lo que tienes</small></button>
 <button class="quicktileVFIX sponsorTileVFIX" type="button" onclick="go('sponsors');setTimeout(renderSponsorsV14,50)"><span>⭐</span><b>NutriFit Sponsors</b><small>8 espacios · $1 / 24 h</small></button>
-</div><button class="addmain" onclick="openFood()"><span>＋</span><div><b>Añadir alimento</b><small>Busca, pesa y registra</small></div><strong>›</strong></button>
-<div class="insight"><div class="insighticon">💡</div><div><b id="insightTitle">Tu resumen de hoy</b><p id="insightText">Registra tu primera comida y NutriFit te dará recomendaciones.</p></div></div><div class="recentbox" id="recentFoods"><div class="recenttop"><b>Volver a comer</b><button onclick="openFood()">Ver todos →</button></div><div id="recentList"></div></div>
-    <div class="sectionhead"><h2>Comidas</h2><span id="foodCount">0 alimentos</span></div><div id="meals"></div>
+</div><div id="newFeaturesV8" class="newFeaturesV8">
+      <button onclick="go('diet')"><span>📅</span><b>Plan semanal</b><small>Organiza tus comidas</small></button>
+      <button onclick="go('chat')"><span>🤖</span><b>NutriIA</b><small>Pregúntame lo que quieras</small></button>
+      <button onclick="go('progress')"><span>📈</span><b>Tu progreso</b><small>Comprueba cómo avanzas</small></button>
+    </div>
+<h2>Comidas</h2><span id="foodCount">0 alimentos</span></div><div id="meals"></div>
 <div class="water"><div><span>💧</span><div><b>Agua</b><small id="waterText">0 / 2,5 L</small></div></div><button onclick="addWater()">+ 250 ml</button><div class="waterbar"><i id="waterBar"></i></div></div>
 </section>
 
