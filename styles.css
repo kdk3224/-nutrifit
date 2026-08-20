@@ -78,12 +78,21 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 .scrollcueFIX{text-align:center;color:#8a948d;font-size:8px;margin:-2px 0 8px}
 @media(max-width:370px){.quicktileVFIX{min-height:104px!important;padding-left:3px!important;padding-right:3px!important}.quicktileVFIX b{font-size:8px!important}}
 
-/* V2 layout — new actions immediately visible below the calorie hero */
+/* NutriFit V2 complete layout */
 .quickgrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;width:100%!important;margin:12px 0 16px!important}
 .quicktileVFIX{min-height:112px!important;min-width:0!important;border:1px solid #e2e9e3!important;border-radius:20px!important;background:#fff!important;padding:12px 6px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;box-shadow:0 8px 20px rgba(22,51,27,.07)!important}
-.quicktileVFIX>span{font-size:25px!important;line-height:1!important;margin-bottom:8px!important}
-.quicktileVFIX b{font-size:9px!important;text-align:center!important}
-.quicktileVFIX small{font-size:7px!important;color:#7e8981!important;text-align:center!important;margin-top:4px!important;line-height:1.25!important}
-.scannerTileVFIX{background:#effaf4!important;border-color:#cfeedd!important}
-.pantryTileVFIX{background:#f5f8ff!important;border-color:#dfe7fa!important}
-.sponsorTileVFIX{background:#fffaf0!important;border-color:#eddfbe!important}
+.quicktileVFIX>span{font-size:25px!important;line-height:1!important;margin-bottom:8px!important}.quicktileVFIX b{font-size:9px!important;text-align:center!important}.quicktileVFIX small{font-size:7px!important;color:#7e8981!important;text-align:center!important;margin-top:4px!important;line-height:1.25!important}
+.scannerTileVFIX{background:#effaf4!important;border-color:#cfeedd!important}.pantryTileVFIX{background:#f5f8ff!important;border-color:#dfe7fa!important}.sponsorTileVFIX{background:#fffaf0!important;border-color:#eddfbe!important}
+.welcomeOnceV2{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#f5fbf7,#fff 75%);display:flex;align-items:flex-end;justify-content:center;touch-action:none;transition:transform .45s cubic-bezier(.2,.85,.25,1)}
+.welcomeOnceV2.welcomeHideV2{transform:translateY(-100%)}
+.welcomeHandleV2{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:44px;height:5px;border-radius:9px;background:#cdd8d1}
+.welcomeContentV2{width:min(520px,100%);padding:30px 24px calc(28px + env(safe-area-inset-bottom));box-sizing:border-box;text-align:center}
+.welcomeLogoV2{width:62px;height:62px;margin:0 auto 18px;border-radius:20px;background:linear-gradient(145deg,#20b26b,#0f7f4d);color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;box-shadow:0 12px 28px rgba(15,127,77,.2)}
+.welcomeOnceV2 h1{font-size:38px;line-height:1.02;letter-spacing:-1.5px;margin:9px 0 12px;color:#15231b}.welcomeOnceV2 h1 span{color:#15945a}.welcomeOnceV2 p{max-width:340px;margin:auto;color:#718078;font-size:12px;line-height:1.55}
+.welcomeFeaturesV2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:24px 0}.welcomeFeaturesV2>div{background:#fff;border:1px solid #e2eae4;border-radius:18px;padding:12px 6px;box-shadow:0 8px 20px rgba(22,51,27,.05)}.welcomeFeaturesV2 b{display:block;font-size:22px;margin-bottom:5px}.welcomeFeaturesV2 span{font-size:8px;color:#69766e}
+.welcomeSwipeV2{display:flex;align-items:center;justify-content:center;gap:10px;color:#177f4e;cursor:pointer}.welcomeSwipeV2>span{width:34px;height:34px;border-radius:12px;background:#e9f7ef;display:grid;place-items:center;font-size:21px;animation:welcomeFloatV2 1.25s ease-in-out infinite}.welcomeSwipeV2 b,.welcomeSwipeV2 small{display:block;text-align:left}.welcomeSwipeV2 b{font-size:10px}.welcomeSwipeV2 small{font-size:8px;color:#87918b;margin-top:2px}
+@keyframes welcomeFloatV2{0%,100%{transform:translateY(3px)}50%{transform:translateY(-4px)}}
+
+/* V3 — complete sponsor area + clean standalone navigation */
+.sponsorHeroV3{background:linear-gradient(135deg,#f0faf4,#fffaf0);border:1px solid #e2e9e3;border-radius:22px;padding:18px;margin:14px 0}.sponsorHeroV3 b,.sponsorHeroV3 span{display:block}.sponsorHeroV3 b{font-size:18px}.sponsorHeroV3 span{font-size:10px;color:#6f7c74;margin-top:4px}
+.sponsorPlansV3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.sponsorPlansV3 button{border:1px solid #e2e9e3;background:#fff;border-radius:18px;padding:13px 5px;min-height:94px}.sponsorPlansV3 button.best{border-color:#d7bd70;background:#fffaf0}.sponsorPlansV3 b,.sponsorPlansV3 span,.sponsorPlansV3 small{display:block}.sponsorPlansV3 b{font-size:20px}.sponsorPlansV3 span{font-size:9px;margin-top:2px}.sponsorPlansV3 small{font-size:7px;color:#7d877f;margin-top:5px}.sectionTitleV3{font-size:14px;margin:20px 0 9px}.sponsorPolicyV3{font-size:8px;line-height:1.5;color:#818b84;text-align:center;margin:12px 0 28px}.sponsorLinkV3{margin:10px 0}.sponsorLinkV3 button{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;text-align:left;gap:9px;border:1px solid #eadfbd;background:#fffaf0;border-radius:17px;padding:12px}.sponsorLinkV3 b,.sponsorLinkV3 small{display:block}.sponsorLinkV3 small{font-size:8px;color:#7d877f;margin-top:2px}.sponsorLinkV3 strong{font-size:18px}

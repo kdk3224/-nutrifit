@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#20b26b"><link rel="manifest" href="manifest.json"><title>NutriFit</title><!-- NUTRIFIT_V2_LAYOUT --><!-- NUTRIFIT_STABLE_REPAIR --><link rel="stylesheet" href="styles.css"></head>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#20b26b"><link rel="manifest" href="manifest.json"><title>NutriFit</title><!-- NUTRIFIT_STABLE_REPAIR --><link rel="stylesheet" href="styles.css"></head>
 <body><div id="app">
 <header class="topbar"><div class="brand"><div class="brandmark">NF</div><div><b>NutriFit</b><small>Tu día, a tu manera</small></div></div><button class="iconbtn" onclick="go('profile')">⚙️</button></header>
 <main>
@@ -8,7 +8,7 @@
 <div class="quickgrid">
 <button class="quicktileVFIX scannerTileVFIX" type="button" onclick="openScannerV15()"><span>📷</span><b>Escanear alimento</b><small>Código de barras</small></button>
 <button class="quicktileVFIX pantryTileVFIX" type="button" onclick="openPantryV15()"><span>🧊</span><b>Mi despensa</b><small>Usa lo que tienes</small></button>
-<button class="quicktileVFIX sponsorTileVFIX" type="button" onclick="go('profile');setTimeout(renderSponsorsV14,50)"><span>⭐</span><b>NutriFit Sponsors</b><small>8 espacios · $1 / 24 h</small></button>
+<button class="quicktileVFIX sponsorTileVFIX" type="button" onclick="go('sponsors');setTimeout(renderSponsorsV14,50)"><span>⭐</span><b>NutriFit Sponsors</b><small>8 espacios · $1 / 24 h</small></button>
 </div>
 <div class="scrollcueFIX">Desliza para ver el resto de tu día ↓</div><div class="macro-title"><h2>Macros de hoy</h2><button onclick="go('profile')">Objetivos</button></div>
 <div class="macros"><div class="macro"><div class="macroicon">🥩</div><b id="p">0 g</b><span>Proteína</span><div class="bar"><i id="pb"></i></div><small id="pt">Sin objetivo</small></div><div class="macro"><div class="macroicon">🍚</div><b id="c">0 g</b><span>Carbohidratos</span><div class="bar"><i id="cb"></i></div><small id="ct">Sin objetivo</small></div><div class="macro"><div class="macroicon">🥑</div><b id="f">0 g</b><span>Grasas</span><div class="bar"><i id="fb"></i></div><small id="ft">Sin objetivo</small></div></div>
@@ -50,11 +50,29 @@
 
 <section id="chat" class="screen"><div class="pagehead"><div class="eyebrow">ASISTENTE</div><h1>NutriIA 🤖</h1><p>Tu asistente de nutrición contextual. En esta versión funciona sin API externa.</p></div><div class="chatbox" id="chatbox"><div class="bubble ai">¡Hola! Soy NutriIA. Puedo ayudarte a interpretar tus kcal y macros, elegir comidas o darte ideas con lo que te queda hoy.</div></div><div class="chips"><button onclick="ask('¿Qué puedo cenar hoy?')">¿Qué puedo cenar?</button><button onclick="ask('¿Cómo voy de proteína?')">¿Cómo voy de proteína?</button><button onclick="ask('Dame una idea rápida')">Idea rápida</button></div><div class="chatinput"><input id="chatInput" placeholder="Escribe a NutriIA..."><button onclick="sendChat()">➤</button></div></section>
 
+<section id="sponsors" class="screen">
+  <div class="topbar"><div><div class="eyebrow">NUTRIFIT SPONSORS</div><h1>Patrocina NutriFit ⭐</h1><p>Haz visible tu negocio ante personas interesadas en nutrición y fitness.</p></div></div>
+  <div class="sponsorHeroV3"><b>Tu negocio aquí</b><span>Desde $1 por 24 horas</span></div>
+  <div class="sponsorPlansV3">
+    <button onclick="sponsorPlanV3('day')"><b>$1</b><span>24 horas</span><small>Prueba rápida</small></button>
+    <button onclick="sponsorPlanV3('week')"><b>$5</b><span>7 días</span><small>🔥 Ahorra</small></button>
+    <button class="best" onclick="sponsorPlanV3('month')"><b>$25</b><span>30 días</span><small>⭐ Mejor opción</small></button>
+  </div>
+  <h2 class="sectionTitleV3">Espacios disponibles</h2>
+  <div class="sponsorGridV14" id="sponsorGridV14"></div>
+  <div class="sponsorPolicyV3">Los espacios son independientes del perfil. Los patrocinadores aparecen en el apartado Sponsors de NutriFit.</div>
+</section>
 <section id="profile" class="screen"><div class="pagehead"><div class="eyebrow">PERFIL</div><h1>Mis objetivos 🎯</h1><p>Personaliza tus metas. También puedes usar NutriFit sin introducir datos.</p></div><div class="profilecard"><div class="profilegrid"><label>Edad<input id="age" type="number" placeholder="26"></label><label>Sexo<select id="sex"><option value="m">Hombre</option><option value="f">Mujer</option></select></label><label>Altura<input id="height" type="number" placeholder="175"></label><label>Peso<input id="weight" type="number" step=".1" placeholder="70"></label></div><label>Actividad<select id="activity"><option value="1.2">Sedentario</option><option value="1.375">Ligera</option><option value="1.55" selected>Moderada</option><option value="1.725">Alta</option></select></label><label>Objetivo<select id="goal"><option value="lose">🔥 Perder grasa</option><option value="maintain">⚖️ Mantener</option><option value="gain">💪 Ganar músculo</option></select></label><button class="primary" onclick="saveProfile()">Calcular mis objetivos</button><button class="ghost" onclick="clearProfile()">Usar sin objetivos</button></div><div class="sponsorsHeadV14"><div><div class="eyebrow">NUTRIFIT SPONSORS</div><h2>Patrocinadores</h2></div><span>8 espacios</span></div>
 <p class="sponsorIntroV14">Espacios publicitarios independientes del inicio. $1 durante 24 horas.</p>
 <div class="sponsorGridV14" id="sponsorGridV14"></div></section>
 </main>
-<nav><button class="active" data-page="home" onclick="go('home')">⌂<span>Inicio</span></button><button data-page="diet" onclick="go('diet')">🥗<span>Dieta</span></button><button data-page="training" onclick="go('training')">🏋️<span>Entreno</span></button><button data-page="progress" onclick="go('progress')">📈<span>Progreso</span></button><button data-page="tips" onclick="go('tips')">💡<span>Consejos</span></button><button data-page="chat" onclick="go('chat')">🤖<span>NutriIA</span></button><button data-page="profile" onclick="go('profile')">👤<span>Perfil</span></button></nav>
+<nav class="bottomnavV16">
+<button data-page="home" onclick="go('home')">⌂<span>Inicio</span></button>
+<button data-page="diet" onclick="go('diet')">🥗<span>Dieta</span></button>
+<button data-page="progress" onclick="go('progress')">📈<span>Progreso</span></button>
+<button data-page="chat" onclick="go('chat')">🤖<span>NutriIA</span></button>
+<button data-page="profile" onclick="go('profile')">👤<span>Perfil</span></button>
+</nav>
 
 <div id="modal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><div class="eyebrow">REGISTRAR</div><h2>Añadir alimento</h2><input id="search" class="search" placeholder="🔎 Busca pollo, arroz, avena..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><div class="selectedfood"><b id="foodName"></b><small id="foodInfo"></small></div><button class="favoriteBtn" onclick="toggleFavorite()">☆ Favorito</button><label>Cantidad (g)<input id="amount" type="number" value="100"></label><label>Comida<select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select></label><button class="primary" onclick="addFood()">Añadir a mi día</button></div></div></div>
 <div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script src="app.js"></script><div class="modal" id="scannerModalV15">
@@ -74,5 +92,17 @@
     <p>Guarda lo que tienes en casa y NutriFit te propondrá comidas con ello.</p>
     <div id="pantryListV15"></div>
     <button class="primaryV15" onclick="addPantryItemV15()">＋ Añadir alimento</button>
+  </div>
+</div><div id="welcomeOnceV2" class="welcomeOnceV2">
+  <div class="welcomeHandleV2"></div>
+  <div class="welcomeContentV2">
+    <div class="welcomeLogoV2">NF</div>
+    <div class="eyebrow">BIENVENIDO A NUTRIFIT</div>
+    <h1>Tu nutrición,<br><span>a tu manera.</span></h1>
+    <p>Organiza tus comidas, controla tus objetivos y usa NutriIA para tomar mejores decisiones cada día.</p>
+    <div class="welcomeFeaturesV2">
+      <div><b>🥗</b><span>Comidas</span></div><div><b>🤖</b><span>NutriIA</span></div><div><b>📊</b><span>Progreso</span></div>
+    </div>
+    <div class="welcomeSwipeV2"><span>↑</span><div><b>Desliza hacia arriba</b><small>para empezar</small></div></div>
   </div>
 </div></body></html>

@@ -257,3 +257,19 @@ function addPantryItemV15(){
  pantryV15.push(n.trim());localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();
 }
 function removePantryItemV15(i){pantryV15.splice(i,1);localStorage.setItem('nf_pantry_v15',JSON.stringify(pantryV15));renderPantryV15();}
+
+function initWelcomeOnceV2(){
+ const el=document.getElementById('welcomeOnceV2'); if(!el)return;
+ if(localStorage.getItem('nf_welcome_seen_v2')){el.remove();return;}
+ let sy=null;
+ const finish=()=>{if(!el.isConnected)return;el.classList.add('welcomeHideV2');localStorage.setItem('nf_welcome_seen_v2','1');setTimeout(()=>el.remove(),450)};
+ el.addEventListener('touchstart',e=>sy=e.touches[0].clientY,{passive:true});
+ el.addEventListener('touchend',e=>{if(sy!==null && sy-e.changedTouches[0].clientY>60)finish();sy=null},{passive:true});
+ el.querySelector('.welcomeSwipeV2')?.addEventListener('click',finish);
+}
+document.addEventListener('DOMContentLoaded',initWelcomeOnceV2);
+
+function sponsorPlanV3(plan){
+ const prices={day:'$1 / 24 h',week:'$5 / 7 días',month:'$25 / 30 días'};
+ alert('NutriFit Sponsors\\n\\nPlan seleccionado: '+prices[plan]+'\\n\\nLa reserva y el pago se conectarán cuando publiquemos el sistema de patrocinadores.');
+}
