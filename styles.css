@@ -98,3 +98,21 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 .sponsorPlansV3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.sponsorPlansV3 button{border:1px solid #e2e9e3;background:#fff;border-radius:18px;padding:13px 5px;min-height:94px}.sponsorPlansV3 button.best{border-color:#d7bd70;background:#fffaf0}.sponsorPlansV3 b,.sponsorPlansV3 span,.sponsorPlansV3 small{display:block}.sponsorPlansV3 b{font-size:20px}.sponsorPlansV3 span{font-size:9px;margin-top:2px}.sponsorPlansV3 small{font-size:7px;color:#7d877f;margin-top:5px}.sectionTitleV3{font-size:14px;margin:20px 0 9px}.sponsorPolicyV3{font-size:8px;line-height:1.5;color:#818b84;text-align:center;margin:12px 0 28px}.sponsorLinkV3{margin:10px 0}.sponsorLinkV3 button{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;text-align:left;gap:9px;border:1px solid #eadfbd;background:#fffaf0;border-radius:17px;padding:12px}.sponsorLinkV3 b,.sponsorLinkV3 small{display:block}.sponsorLinkV3 small{font-size:8px;color:#7d877f;margin-top:2px}.sponsorLinkV3 strong{font-size:18px}
 
 .welcomeV4Hint{font-size:11px;font-weight:800;color:#26372e;margin:0 0 10px}
+
+/* V5 — compact lower action row, not a hero element */
+.quickgrid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+  width:100%!important;
+  margin:10px 0 14px!important;
+}
+.quicktileVFIX{
+  min-height:86px!important;
+  border-radius:18px!important;
+  padding:9px 5px!important;
+  box-shadow:none!important;
+}
+.quicktileVFIX>span{font-size:21px!important;margin-bottom:5px!important}
+.quicktileVFIX b{font-size:8px!important}
+.quicktileVFIX small{font-size:6.5px!important;margin-top:3px!important}
