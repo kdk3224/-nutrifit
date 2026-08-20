@@ -99,7 +99,7 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 
 .welcomeV4Hint{font-size:11px;font-weight:800;color:#26372e;margin:0 0 10px}
 
-/* V5 — compact lower action row, not a hero element */
+/* V6 — the three new actions occupy the original lower 3-card row */
 .quickgrid{
   display:grid!important;
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -113,6 +113,6 @@ body{background:#dfe8e1;color:var(--nf-ink)}
   padding:9px 5px!important;
   box-shadow:none!important;
 }
-.quicktileVFIX>span{font-size:21px!important;margin-bottom:5px!important}
-.quicktileVFIX b{font-size:8px!important}
-.quicktileVFIX small{font-size:6.5px!important;margin-top:3px!important}
+.quicktileVFIX>span{font-size:21px!important;line-height:1!important;margin-bottom:5px!important}
+.quicktileVFIX b{font-size:8px!important;text-align:center!important;line-height:1.15!important}
+.quicktileVFIX small{font-size:6.5px!important;color:#7e8981!important;text-align:center!important;margin-top:3px!important;line-height:1.2!important}
