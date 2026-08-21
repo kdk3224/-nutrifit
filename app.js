@@ -239,11 +239,18 @@ function showSponsorV14(id){
 const goV14Base=go;
 go=function(id){goV14Base(id);if(id==='profile')setTimeout(renderSponsorsV14,0);};
 
-function openScannerV15(){$('scannerModalV15')?.classList.add('open')}
-function closeScannerV15(){$('scannerModalV15')?.classList.remove('open')}
-function startScannerV15(){
- alert('📷 Escáner NutriFit\\n\\nLa interfaz está preparada. Para leer códigos de barras de verdad conectaremos la cámara del móvil con el lector de códigos y la base de productos.');
-}
+let scannerStreamV21=null, scannerLoopV21=null;
+function openScannerV15(){$('scannerModalV15')?.classList.add('open');$('scannerResultV21').innerHTML='';$('scannerStatusV21').textContent='Apunta la cámara al código de barras.'}
+function closeScannerV15(){stopScannerV21();$('scannerModalV15')?.classList.remove('open')}
+async function startScannerV15(){
+ const v=$('scannerVideoV21'),s=$('scannerStatusV21');
+ if(!navigator.mediaDevices?.getUserMedia){s.textContent='Cámara no disponible. Introduce el código manualmente.';return}
+ if(!('BarcodeDetector' in window)){s.textContent='Este navegador no tiene lector integrado. Introduce el código manualmente.';return}
+ try{scannerStreamV21=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});v.srcObject=scannerStreamV21;v.hidden=false;await v.play();const d=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});s.textContent='Buscando código…';const scan=async()=>{if(!scannerStreamV21)return;try{const a=await d.detect(v);if(a.length){const code=a[0].rawValue;$('barcodeInputV21').value=code;await lookupBarcodeV21(code);stopScannerV21();return}}catch(e){}scannerLoopV21=requestAnimationFrame(scan)};scan()}catch(e){s.textContent='No se pudo abrir la cámara. Comprueba el permiso.'}}
+function stopScannerV21(){if(scannerLoopV21)cancelAnimationFrame(scannerLoopV21);scannerLoopV21=null;if(scannerStreamV21){scannerStreamV21.getTracks().forEach(t=>t.stop());scannerStreamV21=null}const v=$('scannerVideoV21');if(v){v.pause();v.srcObject=null;v.hidden=true}}
+async function lookupBarcodeV21(code){const input=(code||$('barcodeInputV21')?.value||'').trim(),r=$('scannerResultV21'),s=$('scannerStatusV21');if(!input){s.textContent='Introduce un código de barras.';return}s.textContent='Buscando producto…';r.innerHTML='';try{const q=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(input)+'.json');const d=await q.json();if(!d.product){s.textContent='No encontramos ese producto.';return}const p=d.product,n=p.nutriments||{},name=p.product_name_es||p.product_name||'Producto escaneado',k=n['energy-kcal_100g']??'',pr=n.proteins_100g??'',ca=n.carbohydrates_100g??'',f=n.fat_100g??'';window.lastScannedV21={name,kcal:+k||0,protein:+pr||0,carbs:+ca||0,fat:+f||0};s.textContent='Producto encontrado';r.innerHTML='<div class="scannerProductV21"><b>'+escapeHtmlV21(name)+'</b><small>'+escapeHtmlV21(p.brands||'')+'</small><span>'+k+' kcal · '+pr+' g proteína · '+ca+' g carbos · '+f+' g grasa / 100 g</span><button class="primaryV15" onclick="addScannedProductV21()">Añadir a mi día</button></div>'}catch(e){s.textContent='No se pudo consultar la base de productos. Comprueba tu conexión.'}}
+function escapeHtmlV21(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addScannedProductV21(){const p=window.lastScannedV21;if(!p)return;alert('Producto encontrado: '+p.name+'\n\nEn la siguiente integración lo registraremos directamente en el diario.')}
 let pantryV15=JSON.parse(localStorage.getItem('nf_pantry_v15')||'[]');
 function openPantryV15(){renderPantryV15();$('pantryModalV15')?.classList.add('open')}
 function closePantryV15(){$('pantryModalV15')?.classList.remove('open')}
