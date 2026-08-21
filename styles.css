@@ -193,3 +193,49 @@ main{
   transform:translateY(-50%)!important;
   z-index:20!important;
 }
+
+/* V15 — meal + buttons belong on the RIGHT side of each meal card.
+   Narrowly scoped so the bottom navigation is unaffected. */
+.meals .mealAddBtn,
+#meals .mealAddBtn,
+.meals .mealrow .mealAddBtn,
+#meals .mealrow .mealAddBtn,
+.meals .meal-card .mealAddBtn,
+#meals .meal-card .mealAddBtn,
+.meals .mealItem .mealAddBtn,
+#meals .mealItem .mealAddBtn{
+  position:absolute!important;
+  right:16px!important;
+  left:auto!important;
+  top:50%!important;
+  bottom:auto!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+  z-index:5!important;
+}
+
+/* V16 FINAL — the + control is ALWAYS on the right edge of each meal card. */
+#meals > .meal{
+  position:relative!important;
+  padding-right:76px!important;
+  padding-left:18px!important;
+}
+#meals > .meal > .mealAddBtn{
+  position:absolute!important;
+  left:auto!important;
+  right:16px!important;
+  top:50%!important;
+  bottom:auto!important;
+  margin:0!important;
+  transform:translateY(-50%)!important;
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  max-width:42px!important;
+  z-index:50!important;
+  display:grid!important;
+  place-items:center!important;
+}
+#meals > .meal > .mealAddBtn:active{
+  transform:translateY(-50%) scale(.92)!important;
+}
