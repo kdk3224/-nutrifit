@@ -18,7 +18,8 @@
 <button class="quicktileVFIX scannerTileVFIX" type="button" onclick="openScannerV15()"><span>📷</span><b>Escanear alimento</b><small>Código de barras</small></button>
 <button class="quicktileVFIX pantryTileVFIX" type="button" onclick="openPantryV15()"><span>🧊</span><b>Mi despensa</b><small>Usa lo que tienes</small></button>
 <button class="quicktileVFIX sponsorTileVFIX" type="button" onclick="go('sponsors');setTimeout(renderSponsorsV14,50)"><span>⭐</span><b>NutriFit Sponsors</b><small>8 espacios · $1 / 24 h</small></button>
-</div><div id="newFeaturesV8" class="newFeaturesV8">
+</div>
+<div id="newFeaturesV8" class="newFeaturesV8">
       <button onclick="go('diet')"><span>📅</span><b>Plan semanal</b><small>Organiza tus comidas</small></button>
       <button onclick="go('chat')"><span>🤖</span><b>NutriIA</b><small>Pregúntame lo que quieras</small></button>
       <button onclick="go('progress')"><span>📈</span><b>Tu progreso</b><small>Comprueba cómo avanzas</small></button>
@@ -67,9 +68,7 @@
   <div class="sponsorGridV14" id="sponsorGridV14"></div>
   <div class="sponsorPolicyV3">Los espacios son independientes del perfil. Los patrocinadores aparecen en el apartado Sponsors de NutriFit.</div>
 </section>
-<section id="profile" class="screen"><div class="pagehead"><div class="eyebrow">PERFIL</div><h1>Mis objetivos 🎯</h1><p>Personaliza tus metas. También puedes usar NutriFit sin introducir datos.</p></div><div class="profilecard"><div class="profilegrid"><label>Edad<input id="age" type="number" placeholder="26"></label><label>Sexo<select id="sex"><option value="m">Hombre</option><option value="f">Mujer</option></select></label><label>Altura<input id="height" type="number" placeholder="175"></label><label>Peso<input id="weight" type="number" step=".1" placeholder="70"></label></div><label>Actividad<select id="activity"><option value="1.2">Sedentario</option><option value="1.375">Ligera</option><option value="1.55" selected>Moderada</option><option value="1.725">Alta</option></select></label><label>Objetivo<select id="goal"><option value="lose">🔥 Perder grasa</option><option value="maintain">⚖️ Mantener</option><option value="gain">💪 Ganar músculo</option></select></label><button class="primary" onclick="saveProfile()">Calcular mis objetivos</button><button class="ghost" onclick="clearProfile()">Usar sin objetivos</button></div><div class="sponsorsHeadV14"><div><div class="eyebrow">NUTRIFIT SPONSORS</div><h2>Patrocinadores</h2></div><span>8 espacios</span></div>
-<p class="sponsorIntroV14">Espacios publicitarios independientes del inicio. $1 durante 24 horas.</p>
-<div class="sponsorGridV14" id="sponsorGridV14"></div></section>
+<section id="profile" class="screen"><div class="pagehead"><div class="eyebrow">PERFIL</div><h1>Mis objetivos 🎯</h1><p>Personaliza tus metas. También puedes usar NutriFit sin introducir datos.</p></div><div class="profilecard"><div class="profilegrid"><label>Edad<input id="age" type="number" placeholder="26"></label><label>Sexo<select id="sex"><option value="m">Hombre</option><option value="f">Mujer</option></select></label><label>Altura<input id="height" type="number" placeholder="175"></label><label>Peso<input id="weight" type="number" step=".1" placeholder="70"></label></div><label>Actividad<select id="activity"><option value="1.2">Sedentario</option><option value="1.375">Ligera</option><option value="1.55" selected>Moderada</option><option value="1.725">Alta</option></select></label><label>Objetivo<select id="goal"><option value="lose">🔥 Perder grasa</option><option value="maintain">⚖️ Mantener</option><option value="gain">💪 Ganar músculo</option></select></label><button class="primary" onclick="saveProfile()">Calcular mis objetivos</button><button class="ghost" onclick="clearProfile()">Usar sin objetivos</button></div></section>
 </main>
 <nav class="bottomnavV16">
 <button data-page="home" onclick="go('home')">⌂<span>Inicio</span></button>
