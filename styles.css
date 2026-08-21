@@ -151,69 +151,45 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 }
 .bottomnavV16 button{min-width:0!important}
 
-/* V12 — bottom navigation always stays above meal + buttons */
+/* V14 — fixed bottom navigation without altering meal + buttons */
+html,body{overflow-x:hidden!important}
 main{
-  padding-bottom:calc(170px + env(safe-area-inset-bottom))!important;
+  position:relative!important;
+  z-index:0!important;
+  padding-bottom:150px!important;
 }
 .bottomnavV16{
   position:fixed!important;
   left:0!important;
-  right:0!important;
   bottom:0!important;
-  z-index:1000!important;
-  overflow:visible!important;
-}
-.screen{
-  position:relative!important;
-  z-index:1!important;
-}
-.meal,.mealrow,.meal-card,.mealItem{
-  position:relative!important;
-  z-index:1!important;
-}
-.meal button,
-.mealrow button,
-.meal-card button,
-.mealItem button,
-.meal .add,
-.mealrow .add,
-.meal-card .add,
-.mealItem .add{
-  position:relative!important;
-  z-index:2!important;
-}
-
-/* V13 — bottom navigation is a fixed overlay above ALL scrolling content */
-html, body {
-  overflow-x:hidden!important;
-}
-main {
-  position:relative!important;
-  z-index:0!important;
-  isolation:auto!important;
-}
-.screen {
-  position:relative!important;
-  z-index:0!important;
-}
-.bottomnavV16 {
-  position:fixed!important;
-  left:0!important;
-  right:0!important;
-  bottom:0!important;
-  width:100%!important;
+  width:100vw!important;
+  max-width:none!important;
+  min-width:100vw!important;
   height:auto!important;
   min-height:112px!important;
   z-index:2147483647!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:0 0 env(safe-area-inset-bottom)!important;
   background:#fff!important;
   opacity:1!important;
-  transform:none!important;
   overflow:hidden!important;
-  box-sizing:border-box!important;
-  padding-bottom:env(safe-area-inset-bottom)!important;
-  pointer-events:auto!important;
 }
-.bottomnavV16 button {
+.bottomnavV16 button{
+  min-width:0!important;
   position:relative!important;
   z-index:1!important;
+}
+
+/* Keep the meal + control in its original absolute position. */
+.meal .mealAddBtn,
+.mealAddBtn{
+  position:absolute!important;
+  right:14px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  z-index:20!important;
 }
