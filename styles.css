@@ -338,3 +338,8 @@ html body #app > nav.bottomnavV16 > button{
   margin:0!important;
   padding:5px 2px!important;
 }
+
+/* V20 — Home ending */
+main{padding-bottom:0!important}
+#home{padding-bottom:124px!important}
+#home > .water{margin-bottom:18px!important}

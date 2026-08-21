@@ -273,3 +273,7 @@ function sponsorPlanV3(plan){
  const prices={day:'$1 / 24 h',week:'$5 / 7 días',month:'$25 / 30 días'};
  alert('NutriFit Sponsors\\n\\nPlan seleccionado: '+prices[plan]+'\\n\\nLa reserva y el pago se conectarán cuando publiquemos el sistema de patrocinadores.');
 }
+
+function selectSponsorPaymentV20(method){const e=document.getElementById('sponsorPaymentStatusV20');if(e)e.textContent='Método seleccionado: '+method+'. El checkout real se activará al conectar el proveedor.';}
+function exportNutriFitDataV20(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);try{d[k]=JSON.parse(localStorage.getItem(k));}catch(e){d[k]=localStorage.getItem(k);}}const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='nutrifit-datos.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function deleteNutriFitDataV20(){if(!confirm('¿Borrar todos los datos guardados localmente en NutriFit?'))return;const keep=['nf_welcome_seen_v4'];const keys=[];for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));keys.forEach(k=>{if(!keep.includes(k))localStorage.removeItem(k)});location.reload();}
