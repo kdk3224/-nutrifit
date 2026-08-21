@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#20b26b"><link rel="manifest" href="manifest.json"><title>NutriFit</title><!-- NUTRIFIT_STABLE_REPAIR --><link rel="stylesheet" href="styles.css?v=17"></head>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#20b26b"><link rel="manifest" href="manifest.json"><title>NutriFit</title><!-- NUTRIFIT_STABLE_REPAIR --><link rel="stylesheet" href="styles.css?v=18"></head>
 <body><div id="app">
 <header class="topbar"><div class="brand"><div class="brandmark">NF</div><div><b>NutriFit</b><small>Tu día, a tu manera</small></div></div><button class="iconbtn" onclick="go('profile')">⚙️</button></header>
 <main>
@@ -75,7 +75,7 @@
 </nav>
 
 <div id="modal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><div class="eyebrow">REGISTRAR</div><h2>Añadir alimento</h2><input id="search" class="search" placeholder="🔎 Busca pollo, arroz, avena..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><div class="selectedfood"><b id="foodName"></b><small id="foodInfo"></small></div><button class="favoriteBtn" onclick="toggleFavorite()">☆ Favorito</button><label>Cantidad (g)<input id="amount" type="number" value="100"></label><label>Comida<select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select></label><button class="primary" onclick="addFood()">Añadir a mi día</button></div></div></div>
-<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script src="app.js?v=17"></script><div class="modal" id="scannerModalV15">
+<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script src="app.js?v=18"></script><div class="modal" id="scannerModalV15">
   <div class="modalbox scannerBoxV15">
     <button class="modalclose" onclick="closeScannerV15()">×</button>
     <div class="scannerIconV15">📷</div>
