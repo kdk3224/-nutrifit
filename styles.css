@@ -239,3 +239,22 @@ main{
 #meals > .meal > .mealAddBtn:active{
   transform:translateY(-50%) scale(.92)!important;
 }
+
+/* V17 — definitive meal + position, plus cache-busted assets */
+#meals > .meal{
+  position:relative!important;
+  padding-left:18px!important;
+  padding-right:76px!important;
+}
+#meals > .meal > .mealAddBtn{
+  position:absolute!important;
+  left:auto!important;
+  right:16px!important;
+  top:50%!important;
+  bottom:auto!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+  width:42px!important;
+  height:42px!important;
+  z-index:50!important;
+}
