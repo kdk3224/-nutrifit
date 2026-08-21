@@ -140,3 +140,13 @@ body{background:#dfe8e1;color:var(--nf-ink)}
 .quickgrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin:10px 0 14px!important}
 .newFeaturesV8{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin:0 0 14px!important;clear:both!important}
 .newFeaturesV8 button{min-width:0!important;min-height:76px!important}
+
+/* V11 — exact 10-slot navigation requested:
+   first row = 5 original items; second row = NutriIA, Perfil,
+   Escanear, Despensa, Sponsors. */
+.bottomnavV16{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+}
+.bottomnavV16 button{min-width:0!important}
