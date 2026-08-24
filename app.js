@@ -297,18 +297,16 @@ function sponsorPlanV3(plan){
  const e=document.getElementById('sponsorPaymentStatusV24');
  if(e)e.textContent='Plan seleccionado: '+p.display+' · '+(p.hours===24?'24 horas':p.hours===168?'7 días':'30 días')+'. Selecciona el método de pago.';
 }
-function loadPayPalSdkV28(){
+function loadPayPalSdkV29(){
  return new Promise((resolve,reject)=>{
-  if(window.paypal && window.paypal.Buttons){resolve(window.paypal);return;}
-  if(window.nfPayPalSdkPromiseV28){window.nfPayPalSdkPromiseV28.then(resolve).catch(reject);return;}
-  const client='AaJoqjm6Sou7-BVnssK4bUZgxjivIKHwqBXY8aVR';
-  const s=document.createElement('script');
-  s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(client)+'&currency=EUR&components=buttons';
-  s.async=true;
-  s.onload=()=>{ if(window.paypal && window.paypal.Buttons) resolve(window.paypal); else reject(new Error('SDK cargado pero PayPal no está disponible')); };
-  s.onerror=()=>reject(new Error('No se pudo descargar el SDK de PayPal'));
-  document.head.appendChild(s);
-  window.nfPayPalSdkPromiseV28=new Promise((res,rej)=>{s.addEventListener('load',()=>res(window.paypal));s.addEventListener('error',()=>rej(new Error('No se pudo descargar el SDK de PayPal')));});
+  if(window.paypal && window.paypal.createInstance){resolve(window.paypal);return;}
+  if(window.nfPayPalV6Error){reject(new Error('El SDK v6 de PayPal no pudo cargarse desde este navegador.'));return;}
+  const ok=()=>{cleanup(); if(window.paypal && window.paypal.createInstance) resolve(window.paypal); else reject(new Error('PayPal v6 se descargó pero no expuso createInstance.'));};
+  const bad=()=>{cleanup(); reject(new Error('No se pudo descargar el SDK v6 de PayPal Sandbox.'));};
+  const cleanup=()=>{window.removeEventListener('nf-paypal-v6-loaded',ok);window.removeEventListener('nf-paypal-v6-error',bad);};
+  window.addEventListener('nf-paypal-v6-loaded',ok,{once:true});
+  window.addEventListener('nf-paypal-v6-error',bad,{once:true});
+  setTimeout(()=>{if(window.paypal && window.paypal.createInstance) ok();},12000);
  });
 }
 
@@ -321,46 +319,26 @@ async function startSponsorCheckoutV24(){
  if(!nfSponsorMethodV24){alert('Selecciona un método de pago.');return;}
  const plan=NF_SPONSOR_CHECKOUT_V24[nfSponsorPlanV24];
  localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({name,text,url,plan:nfSponsorPlanV24,method:nfSponsorMethodV24,createdAt:Date.now()}));
+ const box=document.getElementById('paypal-button-container-v24');
  if(nfSponsorMethodV24!=='paypal'){
-  alert('En esta versión de prueba solo está conectado PayPal Sandbox. Selecciona PayPal para probar el pago.');
+  alert('El siguiente paso será conectar Tarjeta, Apple Pay y Google Pay mediante PayPal Checkout. Revolut Pay se conectará por separado.');
   return;
  }
- const box=document.getElementById('paypal-button-container-v24');
- if(!box){alert('No se encontró el botón de PayPal.');return;}
+ if(!box){alert('No se encontró el área de pago.');return;}
  box.style.display='block';
- box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div><div style="padding:12px;border-radius:10px;background:#eef5ff;color:#244d7a">Cargando PayPal Sandbox…</div>';
+ box.innerHTML='<div style="font-weight:700;margin:8px 0">PayPal Sandbox v6 · '+plan.display+'</div><div id="nfPaypalDiagV29" style="padding:12px;border-radius:10px;background:#eef5ff;color:#244d7a">Cargando PayPal Web SDK v6…</div>';
  try{
-  const pp=await loadPayPalSdkV28();
-  box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div>';
-  if(window.nfPayPalButtonsV24){try{window.nfPayPalButtonsV24.close();}catch(e){} }
-  window.nfPayPalButtonsV24=pp.Buttons({
-   style:{layout:'vertical',shape:'rect',label:'paypal'},
-   createOrder:function(data,actions){
-    return actions.order.create({purchase_units:[{description:'NutriFit Sponsor '+plan.display,amount:{currency_code:'EUR',value:plan.amount}}]});
-   },
-   onApprove:function(data,actions){
-    return actions.order.capture().then(function(details){
-     const now=Date.now();
-     const expiresAt=now+(plan.hours*60*60*1000);
-     const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>!x.expiresAt||x.expiresAt>now);
-     const used=saved.map(x=>x.slot).filter(Boolean);
-     const slot=[1,2,3,4,5,6,7,8].find(n=>!used.includes(n))||1;
-     saved.push({id:Date.now(),slot,name,text,url,plan:nfSponsorPlanV24,amount:plan.amount,currency:'EUR',hours:plan.hours,createdAt:now,expiresAt,paymentId:data.orderID,status:'paid_sandbox'});
-     localStorage.setItem('nf_sponsors_v14',JSON.stringify(saved));
-     localStorage.removeItem('nf_sponsor_pending_v24');
-     renderSponsorsV14(); box.style.display='none';
-     const status=document.getElementById('sponsorPaymentStatusV24');
-     if(status)status.textContent='✅ Pago de prueba confirmado. Patrocinio activo durante '+plan.hours+' h.';
-     alert('✅ Pago de prueba realizado correctamente.\n\n'+(details.payer?.name?.given_name||'Patrocinador')+' · '+plan.display+'\nID: '+data.orderID);
-    });
-   },
-   onCancel:function(){const status=document.getElementById('sponsorPaymentStatusV24');if(status)status.textContent='Pago cancelado. No se ha activado ningún patrocinio.';},
-   onError:function(err){console.error(err);const status=document.getElementById('sponsorPaymentStatusV24');if(status)status.textContent='Error de PayPal. No se ha activado ningún patrocinio.';}
-  });
-  await window.nfPayPalButtonsV24.render('#paypal-button-container-v24');
+  const pp=await loadPayPalSdkV29();
+  const diag=document.getElementById('nfPaypalDiagV29');
+  if(!pp || !pp.createInstance) throw new Error('SDK v6 disponible pero createInstance no está disponible.');
+  // v6 loads successfully, but a real order must be created/captured by a server endpoint.
+  // Never put the PayPal secret in this static GitHub Pages app.
+  if(diag) diag.innerHTML='<b>✅ PayPal Web SDK v6 cargado en este iPhone.</b><br><br>El siguiente paso es conectar un pequeño backend seguro para crear y capturar el pedido. No se puede hacer de forma segura desde GitHub Pages sin exponer el Secret de PayPal.';
+  const status=document.getElementById('sponsorPaymentStatusV24');
+  if(status) status.textContent='✅ PayPal v6 funciona. Falta conectar el backend seguro de pagos.';
  }catch(err){
-  console.error('PayPal SDK V28:',err);
-  box.innerHTML='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">No se pudo cargar PayPal Sandbox desde este iPhone. El resto de NutriFit funciona correctamente.<br><small>V28 · carga dinámica del SDK</small></div>';
+  console.error('PayPal SDK V29:',err);
+  box.innerHTML='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">❌ '+(err.message||'No se pudo cargar PayPal v6 Sandbox.')+'<br><small>V29 · PayPal Web SDK v6</small></div>';
  }
 }
 
