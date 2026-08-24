@@ -379,3 +379,28 @@ async function startSponsorCheckoutV24(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}});
+
+
+// V32 — Stripe Payment Links
+function selectSponsorPaymentV24(method){
+  nfSponsorMethodV24=method;
+  document.querySelectorAll('#sponsorMethodsV24 button').forEach(b=>b.classList.remove('active'));
+  const btn=[...document.querySelectorAll('#sponsorMethodsV24 button')].find(b=>b.getAttribute('onclick')===`selectSponsorPaymentV24('${method}')`);
+  if(btn) btn.classList.add('active');
+  const e=document.getElementById('sponsorPaymentStatusV24');
+  if(e){
+    if(method==='paypal') e.textContent='PayPal se conectará como opción independiente.';
+    else e.textContent='Pago seguro con Stripe. El checkout mostrará los métodos compatibles con tu dispositivo.';
+  }
+}
+function startSponsorCheckoutV24(){
+  const planKey=nfSponsorPlanV24;
+  const plan=NF_SPONSOR_PLANS_V24[planKey];
+  if(!plan){ alert('Selecciona un plan.'); return; }
+  if(nfSponsorMethodV24==='paypal'){
+    alert('La opción PayPal todavía no está conectada. De momento usa Tarjeta / Apple Pay / Google Pay mediante Stripe.');
+    return;
+  }
+  if(!plan.stripe){ alert('No encontramos el enlace de pago para este plan.'); return; }
+  window.location.href=plan.stripe;
+}
