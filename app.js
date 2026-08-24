@@ -222,10 +222,12 @@ go=function(id){goV13Base(id);if(id==='profile')renderProfileV13();};
 const sponsorsV14=Array.from({length:8},(_,i)=>({id:i+1}));
 function renderSponsorsV14(){
  const box=$('sponsorGridV14'); if(!box)return;
- const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]');
+ const now=Date.now();
+ const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>!x.expiresAt||x.expiresAt>now);
+ localStorage.setItem('nf_sponsors_v14',JSON.stringify(saved));
  box.innerHTML=sponsorsV14.map(s=>{
-   const a=saved.find(x=>x.id===s.id);
-   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.logo||'⭐'}</span><b>${a.name}</b><small>Patrocinador · 24 h</small></button>`;
+   const a=saved.find(x=>x.slot===s.id) || saved.find(x=>!x.slot);
+   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.logo||'⭐'}</span><b>${a.name}</b><small>Patrocinador · ${Math.max(1,Math.ceil((a.expiresAt-now)/3600000))} h</small></button>`;
    return `<button class="sponsorSlotV14" onclick="buySponsorV14(${s.id})"><span class="plusSponsorV14">＋</span><b>Patrocina este espacio</b><small>$1 · 24 horas</small></button>`;
  }).join('');
 }
@@ -275,35 +277,82 @@ function sponsorPlanV3(plan){
 function selectSponsorPaymentV20(method){const e=document.getElementById('sponsorPaymentStatusV20');if(e)e.textContent='Método seleccionado: '+method+'. El checkout real se activará al conectar el proveedor.';}
 function exportNutriFitDataV20(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);try{d[k]=JSON.parse(localStorage.getItem(k));}catch(e){d[k]=localStorage.getItem(k);}}const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='nutrifit-datos.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function deleteNutriFitDataV20(){if(!confirm('¿Borrar todos los datos guardados localmente en NutriFit?'))return;const keep=['nf_welcome_seen_v4'];const keys=[];for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));keys.forEach(k=>{if(!keep.includes(k))localStorage.removeItem(k)});location.reload();}
-// V24 Sponsors — checkout flow without fake payment confirmation.
-const NF_SPONSOR_CHECKOUT_V24 = {
+// V25 Sponsors — checkout flow without fake payment confirmation.
+const NF_SPONSOR_CHECKOUT_V25 = {
   // Add the real hosted checkout URLs after creating them in your payment provider.
-  day: {amount:'$1', hours:24, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
-  week:{amount:'$5', hours:168, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
-  month:{amount:'$25',hours:720, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}}
+  day: {amount:'1.00', display:'1 €', hours:24, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
+  week:{amount:'5.00', display:'5 €', hours:168, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
+  month:{amount:'25.00', display:'25 €', hours:720, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}}
 };
-let nfSponsorPlanV24='day';
-let nfSponsorMethodV24='';
-function selectSponsorPaymentV24(method){
- nfSponsorMethodV24=method;
- const e=document.getElementById('sponsorPaymentStatusV24');
+let nfSponsorPlanV25='day';
+let nfSponsorMethodV25='';
+function selectSponsorPaymentV25(method){
+ nfSponsorMethodV25=method;
+ const e=document.getElementById('sponsorPaymentStatusV25');
  if(e)e.textContent='Método seleccionado: '+({card:'Tarjeta',applepay:'Apple Pay',googlepay:'Google Pay',paypal:'PayPal',revolut:'Revolut Pay'}[method]||method)+'. Ahora pulsa «Continuar al pago». ';
 }
 function sponsorPlanV3(plan){
- nfSponsorPlanV24=plan;
- const p=NF_SPONSOR_CHECKOUT_V24[plan];
- const e=document.getElementById('sponsorPaymentStatusV24');
- if(e)e.textContent='Plan seleccionado: '+p.amount+' · '+(p.hours===24?'24 horas':p.hours===168?'7 días':'30 días')+'. Selecciona el método de pago.';
+ nfSponsorPlanV25=plan;
+ const p=NF_SPONSOR_CHECKOUT_V25[plan];
+ const e=document.getElementById('sponsorPaymentStatusV25');
+ if(e)e.textContent='Plan seleccionado: '+p.display+' · '+(p.hours===24?'24 horas':p.hours===168?'7 días':'30 días')+'. Selecciona el método de pago.';
 }
-function startSponsorCheckoutV24(){
- const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
- const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
- const url=(document.getElementById('sponsorUrlV24')?.value||'').trim();
- if(!name||!text){alert('Añade el nombre del negocio y el texto del anuncio.');return;}
- if(!nfSponsorMethodV24){alert('Selecciona un método de pago.');return;}
- const plan=NF_SPONSOR_CHECKOUT_V24[nfSponsorPlanV24];
- const link=plan.links[nfSponsorMethodV24];
- localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({name,text,url,plan:nfSponsorPlanV24,method:nfSponsorMethodV24,createdAt:Date.now()}));
- if(link){window.location.href=link;return;}
- alert('El checkout de '+plan.amount+' está preparado, pero todavía falta conectar el enlace real de pago del proveedor. No se ha registrado ningún pago.');
+function startSponsorCheckoutV25(){
+ const name=(document.getElementById('sponsorNameV25')?.value||'').trim();
+ const text=(document.getElementById('sponsorTextV25')?.value||'').trim();
+ const url=(document.getElementById('sponsorUrlV25')?.value||'').trim();
+ if(!name){alert('Escribe el nombre del negocio.');return;}
+ if(!text){alert('Escribe el texto del anuncio.');return;}
+ if(!nfSponsorMethodV25){alert('Selecciona un método de pago.');return;}
+ const plan=NF_SPONSOR_CHECKOUT_V25[nfSponsorPlanV25];
+ const pending={name,text,url,plan:nfSponsorPlanV25,method:nfSponsorMethodV25,createdAt:Date.now()};
+ localStorage.setItem('nf_sponsor_pending_v25',JSON.stringify(pending));
+ if(nfSponsorMethodV25!=='paypal'){
+   alert('En esta versión de prueba solo está conectado PayPal Sandbox. Selecciona PayPal para probar el pago.');
+   return;
+ }
+ const box=document.getElementById('paypal-button-container-v25');
+ if(!box){alert('No se encontró el botón de PayPal.');return;}
+ box.style.display='block';
+ box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div>';
+ if(typeof paypal==='undefined' || !paypal.Buttons){box.innerHTML+='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">PayPal no se ha cargado. Comprueba tu conexión y vuelve a cargar la web.</div>';return;}
+ if(window.nfPayPalButtonsV25){try{window.nfPayPalButtonsV25.close();}catch(e){} }
+ window.nfPayPalButtonsV25=paypal.Buttons({
+   style:{layout:'vertical',shape:'rect',label:'paypal'},
+   createOrder:function(data,actions){
+     return actions.order.create({
+       purchase_units:[{description:'NutriFit Sponsor '+plan.display,amount:{currency_code:'EUR',value:plan.amount}}]
+     });
+   },
+   onApprove:function(data,actions){
+     return actions.order.capture().then(function(details){
+       const now=Date.now();
+       const expiresAt=now+(plan.hours*60*60*1000);
+       const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>!x.expiresAt||x.expiresAt>now);
+       const used=saved.map(x=>x.slot).filter(Boolean);
+       const slot=[1,2,3,4,5,6,7,8].find(n=>!used.includes(n))||1;
+       const sponsor={id:Date.now(),slot:slot,name:name,text:text,url:url,plan:nfSponsorPlanV25,amount:plan.amount,currency:'EUR',hours:plan.hours,createdAt:now,expiresAt:expiresAt,paymentId:data.orderID,status:'paid_sandbox'};
+       saved.push(sponsor);
+       localStorage.setItem('nf_sponsors_v14',JSON.stringify(saved));
+       localStorage.removeItem('nf_sponsor_pending_v25');
+       renderSponsorsV14();
+       box.style.display='none';
+       const status=document.getElementById('sponsorPaymentStatusV25');
+       if(status)status.textContent='✅ Pago de prueba confirmado. Patrocinio activo durante '+plan.hours+' h.';
+       alert('✅ Pago de prueba realizado correctamente.\n\n'+(details.payer?.name?.given_name||'Patrocinador')+' · '+plan.display+'\nID: '+data.orderID);
+     });
+   },
+   onCancel:function(){
+     const status=document.getElementById('sponsorPaymentStatusV25');
+     if(status)status.textContent='Pago cancelado. No se ha activado ningún patrocinio.';
+   },
+   onError:function(err){
+     console.error(err);
+     const status=document.getElementById('sponsorPaymentStatusV25');
+     if(status)status.textContent='Error de PayPal. No se ha activado ningún patrocinio.';
+   }
+ });
+ window.nfPayPalButtonsV25.render('#paypal-button-container-v25');
 }
+
+document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}});
