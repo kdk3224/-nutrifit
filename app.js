@@ -240,23 +240,19 @@ const goV14Base=go;
 go=function(id){goV14Base(id);if(id==='profile')setTimeout(renderSponsorsV14,0);};
 
 let scannerStreamV21=null, scannerLoopV21=null;
-function openScannerV15(){$('scannerModalV15')?.classList.add('open');$('scannerResultV21').innerHTML='';$('scannerStatusV21').textContent='Apunta la cámara al código de barras.'}
+function closeFeatureModalsV21(){['scannerModalV15','pantryModalV15','modal','swapModal'].forEach(id=>$(id)?.classList.remove('open'));stopScannerV21()}
+function openScannerV15(){closeFeatureModalsV21();$('scannerModalV15')?.classList.add('open');$('scannerResultV21').innerHTML='';$('scannerStatusV21').textContent='Apunta la cámara al código de barras.'}
 function closeScannerV15(){stopScannerV21();$('scannerModalV15')?.classList.remove('open')}
 async function startScannerV15(){
- const v=$('scannerVideoV21'),s=$('scannerStatusV21');
- if(!navigator.mediaDevices?.getUserMedia){s.textContent='Cámara no disponible. Introduce el código manualmente.';return}
- if(!('BarcodeDetector' in window)){s.textContent='Este navegador no tiene lector integrado. Introduce el código manualmente.';return}
- try{scannerStreamV21=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});v.srcObject=scannerStreamV21;v.hidden=false;await v.play();const d=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});s.textContent='Buscando código…';const scan=async()=>{if(!scannerStreamV21)return;try{const a=await d.detect(v);if(a.length){const code=a[0].rawValue;$('barcodeInputV21').value=code;await lookupBarcodeV21(code);stopScannerV21();return}}catch(e){}scannerLoopV21=requestAnimationFrame(scan)};scan()}catch(e){s.textContent='No se pudo abrir la cámara. Comprueba el permiso.'}}
-function stopScannerV21(){if(scannerLoopV21)cancelAnimationFrame(scannerLoopV21);scannerLoopV21=null;if(scannerStreamV21){scannerStreamV21.getTracks().forEach(t=>t.stop());scannerStreamV21=null}const v=$('scannerVideoV21');if(v){v.pause();v.srcObject=null;v.hidden=true}}
-async function lookupBarcodeV21(code){const input=(code||$('barcodeInputV21')?.value||'').trim(),r=$('scannerResultV21'),s=$('scannerStatusV21');if(!input){s.textContent='Introduce un código de barras.';return}s.textContent='Buscando producto…';r.innerHTML='';try{const q=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(input)+'.json');const d=await q.json();if(!d.product){s.textContent='No encontramos ese producto.';return}const p=d.product,n=p.nutriments||{},name=p.product_name_es||p.product_name||'Producto escaneado',k=n['energy-kcal_100g']??'',pr=n.proteins_100g??'',ca=n.carbohydrates_100g??'',f=n.fat_100g??'';window.lastScannedV21={name,kcal:+k||0,protein:+pr||0,carbs:+ca||0,fat:+f||0};s.textContent='Producto encontrado';r.innerHTML='<div class="scannerProductV21"><b>'+escapeHtmlV21(name)+'</b><small>'+escapeHtmlV21(p.brands||'')+'</small><span>'+k+' kcal · '+pr+' g proteína · '+ca+' g carbos · '+f+' g grasa / 100 g</span><button class="primaryV15" onclick="addScannedProductV21()">Añadir a mi día</button></div>'}catch(e){s.textContent='No se pudo consultar la base de productos. Comprueba tu conexión.'}}
-function escapeHtmlV21(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function addScannedProductV21(){const p=window.lastScannedV21;if(!p)return;alert('Producto encontrado: '+p.name+'\n\nEn la siguiente integración lo registraremos directamente en el diario.')}
-let pantryV15=JSON.parse(localStorage.getItem('nf_pantry_v15')||'[]');
-function openPantryV15(){renderPantryV15();$('pantryModalV15')?.classList.add('open')}
-function closePantryV15(){$('pantryModalV15')?.classList.remove('open')}
-function renderPantryV15(){
- const b=$('pantryListV15');if(!b)return;
- b.innerHTML=pantryV15.length?pantryV15.map((x,i)=>`<div class="pantryrowV15"><span>🥗 ${x}</span><button onclick="removePantryItemV15(${i})">×</button></div>`).join(''):'<div class="pantryemptyV15">Todavía no tienes alimentos en la despensa.</div>';
+ const v=$('scannerVideoV21'),st=$('scannerStatusV21');
+ if(!navigator.mediaDevices?.getUserMedia){st.textContent='Este dispositivo no permite abrir la cámara desde aquí. Puedes introducir el código manualmente.';return}
+ try{
+  scannerStreamV21=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:false});
+  v.srcObject=scannerStreamV21;v.hidden=false;await v.play();
+  if(!('BarcodeDetector' in window)){st.textContent='Cámara abierta. Este navegador no tiene lector automático; introduce el código manualmente.';return}
+  const d=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']});st.textContent='Apunta al código de barras…';
+  const scan=async()=>{if(!scannerStreamV21)return;try{const a=await d.detect(v);if(a.length){const code=a[0].rawValue;$('barcodeInputV21').value=code;await lookupBarcodeV21(code);stopScannerV21();return}}catch(e){}scannerLoopV21=requestAnimationFrame(scan)};scan();
+ }catch(e){st.textContent='No se pudo abrir la cámara. Comprueba el permiso del navegador.';v.hidden=true;}
 }
 function addPantryItemV15(){
  const n=prompt('¿Qué alimento tienes en casa?');
@@ -284,3 +280,12 @@ function sponsorPlanV3(plan){
 function selectSponsorPaymentV20(method){const e=document.getElementById('sponsorPaymentStatusV20');if(e)e.textContent='Método seleccionado: '+method+'. El checkout real se activará al conectar el proveedor.';}
 function exportNutriFitDataV20(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);try{d[k]=JSON.parse(localStorage.getItem(k));}catch(e){d[k]=localStorage.getItem(k);}}const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='nutrifit-datos.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function deleteNutriFitDataV20(){if(!confirm('¿Borrar todos los datos guardados localmente en NutriFit?'))return;const keep=['nf_welcome_seen_v4'];const keys=[];for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));keys.forEach(k=>{if(!keep.includes(k))localStorage.removeItem(k)});location.reload();}
+
+function syncFeatureModalLockV21(){const open=['scannerModalV15','pantryModalV15'].some(id=>document.getElementById(id)?.classList.contains('open'));document.body.style.overflow=open?'hidden':'';}
+const _openScannerV21=openScannerV15,_closeScannerV21=closeScannerV15,_openPantryV21=openPantryV15,_closePantryV21=closePantryV15;
+openScannerV15=function(){_openScannerV21();syncFeatureModalLockV21()};
+closeScannerV15=function(){_closeScannerV21();syncFeatureModalLockV21()};
+openPantryV15=function(){_openPantryV21();syncFeatureModalLockV21()};
+closePantryV15=function(){_closePantryV21();syncFeatureModalLockV21()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeScannerV15();closePantryV15()}});
+function handleCameraCaptureV21(input){if(input?.files?.length){const st=document.getElementById('scannerStatusV21');if(st)st.textContent='Foto recibida. Si no se detecta automáticamente, introduce el número del código de barras manualmente.';}}

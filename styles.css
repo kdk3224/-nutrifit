@@ -346,3 +346,16 @@ main{padding-bottom:0!important}
 
 /* V21 scanner */
 .scannerVideoV21{width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin:10px 0;background:#111}.scannerActionsV21{display:flex;gap:8px}.scannerActionsV21>*{flex:1}.barcodeManualV21{display:block;margin-top:12px;font-weight:700}.barcodeManualV21 input{width:100%;box-sizing:border-box;margin-top:6px;padding:12px;border:1px solid #ddd;border-radius:12px}.scannerProductV21{margin-top:12px;padding:14px;border-radius:16px;background:#f5f7f6;display:grid;gap:6px}.scannerProductV21 span{font-size:13px}
+
+/* V21.1 — scanner/pantry modal repair */
+#scannerModalV15, #pantryModalV15{z-index:2147483646!important;align-items:center!important;padding:16px!important;box-sizing:border-box!important}
+#scannerModalV15 .modalbox, #pantryModalV15 .modalbox{position:relative!important;width:min(380px,100%)!important;max-height:calc(100dvh - 32px)!important;overflow:auto!important;background:#fbfdfb!important;border-radius:24px!important;padding:20px!important;box-sizing:border-box!important;margin:0 auto!important;box-shadow:0 20px 60px rgba(0,0,0,.28)!important}
+#scannerModalV15 .modalclose, #pantryModalV15 .modalclose{position:absolute!important;top:12px!important;right:12px!important;left:auto!important;width:36px!important;height:36px!important;border:0!important;border-radius:50%!important;background:#edf2ee!important;color:#16221a!important;font-size:24px!important;line-height:36px!important;padding:0!important;z-index:3!important}
+#scannerModalV15 .scannerIconV15{padding-right:40px!important}
+#scannerModalV15 h2,#pantryModalV15 h2{padding-right:42px!important}
+#scannerModalV15 .primaryV15,#pantryModalV15 .primaryV15{box-sizing:border-box!important}
+
+/* V21.2 - feature modals isolated from bottom navigation */
+#scannerModalV15,#pantryModalV15{display:none!important;position:fixed!important;inset:0!important;align-items:center!important;justify-content:center!important;padding:16px!important;background:rgba(0,0,0,.52)!important;z-index:2147483647!important;overflow:auto!important}
+#scannerModalV15.open,#pantryModalV15.open{display:flex!important}
+#scannerModalV15 .modalbox,#pantryModalV15 .modalbox{position:relative!important;transform:none!important;float:none!important;left:auto!important;right:auto!important;bottom:auto!important;top:auto!important;width:min(380px,calc(100vw - 32px))!important;max-height:calc(100dvh - 32px)!important;overflow:auto!important;margin:0!important}
