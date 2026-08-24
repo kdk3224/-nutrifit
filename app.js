@@ -217,7 +217,7 @@ function openProfileEdit(){
  alert('Puedes editar tus datos desde la sección de configuración de objetivos.');
 }
 const goV13Base=go;
-go=function(id){goV13Base(id);if(id==='profile')renderProfileV13();};
+go=function(id){goV13Base(id);if(id==='profile')renderProfileV13();if(id==='sponsors')setTimeout(renderSponsorsV14,0);};
 
 const sponsorsV14=Array.from({length:8},(_,i)=>({id:i+1}));
 function renderSponsorsV14(){
@@ -231,15 +231,22 @@ function renderSponsorsV14(){
    return `<button class="sponsorSlotV14" onclick="buySponsorV14(${s.id})"><span class="plusSponsorV14">＋</span><b>Patrocina este espacio</b><small>$1 · 24 horas</small></button>`;
  }).join('');
 }
-function buySponsorV14(id){
- alert('⭐ NutriFit Sponsors\\n\\nEspacio #'+id+' · $1 durante 24 horas.\\n\\nEl cobro real se conectará cuando integremos Stripe/PayPal.');
+let nfSponsorSlotV31=1;
+function openSponsorCheckoutV31(id=1){
+ nfSponsorSlotV31=Number(id)||1;
+ const box=document.getElementById('sponsorCheckoutV24');
+ if(!box)return;
+ box.classList.remove('sponsorCheckoutCollapsedV31');
+ box.scrollIntoView({behavior:'smooth',block:'start'});
+ setTimeout(()=>document.getElementById('sponsorNameV24')?.focus(),450);
 }
+function buySponsorV14(id){ openSponsorCheckoutV31(id); }
 function showSponsorV14(id){
  const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]');
  const a=saved.find(x=>x.id===id); if(a) alert('⭐ '+a.name+'\\n\\nPatrocinador NutriFit activo.');
 }
 const goV14Base=go;
-go=function(id){goV14Base(id);if(id==='profile')setTimeout(renderSponsorsV14,0);};
+go=function(id){goV14Base(id);if(id==='profile')setTimeout(renderSponsorsV14,0);if(id==='sponsors')setTimeout(renderSponsorsV14,0);};
 
 let nfScannerInstanceV23=null;
 function openScannerV15(){closePantryV15();const m=$('scannerModalV15');if(!m)return;m.classList.add('open');m.setAttribute('aria-hidden','false');const st=$('nfScannerStatus');if(st)st.textContent='Pulsa “Abrir cámara” para empezar.';}
@@ -297,19 +304,25 @@ function sponsorPlanV3(plan){
  const e=document.getElementById('sponsorPaymentStatusV24');
  if(e)e.textContent='Plan seleccionado: '+p.display+' · '+(p.hours===24?'24 horas':p.hours===168?'7 días':'30 días')+'. Selecciona el método de pago.';
 }
-function loadPayPalSdkV29(){
+const NF_PAYPAL_CLIENT_ID = 'AaJoqjm6Sou7-BVnssK4bUZgxjivIKHwqBXY8aVR';
+const NF_PAYPAL_BACKEND = 'https://REEMPLAZA-ESTO.vercel.app/api';
+function loadPayPalSdkV30(){
  return new Promise((resolve,reject)=>{
   if(window.paypal && window.paypal.createInstance){resolve(window.paypal);return;}
-  if(window.nfPayPalV6Error){reject(new Error('El SDK v6 de PayPal no pudo cargarse desde este navegador.'));return;}
-  const ok=()=>{cleanup(); if(window.paypal && window.paypal.createInstance) resolve(window.paypal); else reject(new Error('PayPal v6 se descargó pero no expuso createInstance.'));};
-  const bad=()=>{cleanup(); reject(new Error('No se pudo descargar el SDK v6 de PayPal Sandbox.'));};
+  const ok=()=>{cleanup(); if(window.paypal && window.paypal.createInstance) resolve(window.paypal); else reject(new Error('PayPal v6 se cargó pero no expuso createInstance.'));};
+  const bad=()=>{cleanup();reject(new Error('No se pudo cargar PayPal Web SDK v6.'));};
   const cleanup=()=>{window.removeEventListener('nf-paypal-v6-loaded',ok);window.removeEventListener('nf-paypal-v6-error',bad);};
   window.addEventListener('nf-paypal-v6-loaded',ok,{once:true});
   window.addEventListener('nf-paypal-v6-error',bad,{once:true});
   setTimeout(()=>{if(window.paypal && window.paypal.createInstance) ok();},12000);
  });
 }
-
+async function paypalApi(path, body){
+ const r=await fetch(NF_PAYPAL_BACKEND+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok) throw new Error(d.error||d.message||('Backend PayPal HTTP '+r.status));
+ return d;
+}
 async function startSponsorCheckoutV24(){
  const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
  const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
@@ -317,28 +330,51 @@ async function startSponsorCheckoutV24(){
  if(!name){alert('Escribe el nombre del negocio.');return;}
  if(!text){alert('Escribe el texto del anuncio.');return;}
  if(!nfSponsorMethodV24){alert('Selecciona un método de pago.');return;}
- const plan=NF_SPONSOR_CHECKOUT_V24[nfSponsorPlanV24];
- localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({name,text,url,plan:nfSponsorPlanV24,method:nfSponsorMethodV24,createdAt:Date.now()}));
+ const planKey=nfSponsorPlanV24;
+ const plan=NF_SPONSOR_CHECKOUT_V24[planKey];
+ localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({name,text,url,plan:planKey,method:nfSponsorMethodV24,slot:nfSponsorSlotV31,createdAt:Date.now()}));
  const box=document.getElementById('paypal-button-container-v24');
  if(nfSponsorMethodV24!=='paypal'){
-  alert('El siguiente paso será conectar Tarjeta, Apple Pay y Google Pay mediante PayPal Checkout. Revolut Pay se conectará por separado.');
-  return;
+  alert('Primero terminamos PayPal. Después conectaremos Tarjeta, Apple Pay y Google Pay al mismo backend.'); return;
  }
  if(!box){alert('No se encontró el área de pago.');return;}
  box.style.display='block';
- box.innerHTML='<div style="font-weight:700;margin:8px 0">PayPal Sandbox v6 · '+plan.display+'</div><div id="nfPaypalDiagV29" style="padding:12px;border-radius:10px;background:#eef5ff;color:#244d7a">Cargando PayPal Web SDK v6…</div>';
+ box.innerHTML='<div style="font-weight:700;margin:8px 0">PayPal Sandbox v6 · '+plan.display+'</div><div id="nfPaypalDiagV29" style="padding:12px;border-radius:10px;background:#eef5ff;color:#244d7a">Conectando con el backend seguro…</div><div id="nfPaypalBtnV30" style="margin-top:12px"></div>';
  try{
-  const pp=await loadPayPalSdkV29();
+  const pp=await loadPayPalSdkV30();
+  const sdk=await pp.createInstance({clientId:NF_PAYPAL_CLIENT_ID,components:['paypal-payments'],pageType:'checkout'});
+  const methods=await sdk.findEligibleMethods({currencyCode:'EUR'});
   const diag=document.getElementById('nfPaypalDiagV29');
-  if(!pp || !pp.createInstance) throw new Error('SDK v6 disponible pero createInstance no está disponible.');
-  // v6 loads successfully, but a real order must be created/captured by a server endpoint.
-  // Never put the PayPal secret in this static GitHub Pages app.
-  if(diag) diag.innerHTML='<b>✅ PayPal Web SDK v6 cargado en este iPhone.</b><br><br>El siguiente paso es conectar un pequeño backend seguro para crear y capturar el pedido. No se puede hacer de forma segura desde GitHub Pages sin exponer el Secret de PayPal.';
-  const status=document.getElementById('sponsorPaymentStatusV24');
-  if(status) status.textContent='✅ PayPal v6 funciona. Falta conectar el backend seguro de pagos.';
+  if(!methods.isEligible('paypal')) throw new Error('PayPal no está disponible para esta cuenta Sandbox.');
+  if(diag) diag.innerHTML='<b>✅ PayPal v6 listo.</b><br>Creando el botón seguro…';
+  const session=sdk.createPayPalOneTimePaymentSession({
+   async onApprove(data){
+    const result=await paypalApi('/capture-order',{orderId:data.orderId});
+    const pending=JSON.parse(localStorage.getItem('nf_sponsor_pending_v24')||'{}');
+    const expiresAt=Date.now()+(NF_SPONSOR_CHECKOUT_V24[pending.plan||planKey]?.hours||24)*3600000;
+    const current=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>x.expiresAt>Date.now());
+    const slot=Number(pending.slot||1);
+    current.push({id:Date.now(),slot,name:pending.name,text:pending.text,url:pending.url,expiresAt,payment:'paypal-sandbox',orderId:data.orderId});
+    localStorage.setItem('nf_sponsors_v14',JSON.stringify(current));
+    if(diag) diag.innerHTML='<b>✅ Pago Sandbox capturado.</b><br>Pedido: '+data.orderId+'<br>Patrocinio activado.';
+    try{renderSponsorsV14();}catch(e){}
+    return result;
+   },
+   onCancel(){ if(diag) diag.textContent='Pago cancelado.'; },
+   onError(e){ if(diag) diag.textContent='Error PayPal: '+(e?.message||e); }
+  });
+  const btn=document.getElementById('nfPaypalBtnV30');
+  btn.innerHTML='<paypal-button id="nfPaypalRealButtonV30" type="pay"></paypal-button>';
+  const el=document.getElementById('nfPaypalRealButtonV30');
+  el.addEventListener('click',async()=>{
+   try{
+    const createOrder=paypalApi('/create-order',{plan:planKey}).then(d=>({orderId:d.id}));
+    await session.start({presentationMode:'auto'},createOrder);
+   }catch(e){if(diag)diag.textContent='Error al iniciar el pago: '+(e?.message||e);}
+  });
  }catch(err){
-  console.error('PayPal SDK V29:',err);
-  box.innerHTML='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">❌ '+(err.message||'No se pudo cargar PayPal v6 Sandbox.')+'<br><small>V29 · PayPal Web SDK v6</small></div>';
+  console.error('PayPal V30:',err);
+  box.innerHTML='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">❌ '+(err.message||'No se pudo iniciar PayPal v6.')+'<br><small>V30 · PayPal + backend</small></div>';
  }
 }
 
