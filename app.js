@@ -277,6 +277,29 @@ function sponsorPlanV3(plan){
 function selectSponsorPaymentV20(method){const e=document.getElementById('sponsorPaymentStatusV20');if(e)e.textContent='Método seleccionado: '+method+'. El checkout real se activará al conectar el proveedor.';}
 function exportNutriFitDataV20(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);try{d[k]=JSON.parse(localStorage.getItem(k));}catch(e){d[k]=localStorage.getItem(k);}}const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='nutrifit-datos.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function deleteNutriFitDataV20(){if(!confirm('¿Borrar todos los datos guardados localmente en NutriFit?'))return;const keep=['nf_welcome_seen_v4'];const keys=[];for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));keys.forEach(k=>{if(!keep.includes(k))localStorage.removeItem(k)});location.reload();}
+// V25 PayPal Sandbox loader — loads the SDK explicitly and reports real load errors.
+const NF_PAYPAL_CLIENT_ID_V25='AaJoqjm6Sou7-BVnssK4bUZgxjivIKHwqBXY8aVR';
+let nfPayPalLoadV25=null;
+function loadPayPalSDKV25(){
+  if(window.paypal && window.paypal.Buttons) return Promise.resolve(window.paypal);
+  if(nfPayPalLoadV25) return nfPayPalLoadV25;
+  nfPayPalLoadV25=new Promise((resolve,reject)=>{
+    const old=document.getElementById('paypal-sdk-v25');
+    if(old) old.remove();
+    const s=document.createElement('script');
+    s.id='paypal-sdk-v25';
+    s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(NF_PAYPAL_CLIENT_ID_V25)+'&currency=EUR&intent=capture&components=buttons&debug=true';
+    s.async=true;
+    s.onload=()=>{
+      if(window.paypal && window.paypal.Buttons) resolve(window.paypal);
+      else reject(new Error('PayPal SDK cargó pero no expuso Buttons.'));
+    };
+    s.onerror=()=>reject(new Error('No se pudo descargar el SDK de PayPal. Puede ser un bloqueo de Safari/red o un problema con el Client ID.'));
+    document.head.appendChild(s);
+  });
+  return nfPayPalLoadV25;
+}
+
 // V25 Sponsors — checkout flow without fake payment confirmation.
 const NF_SPONSOR_CHECKOUT_V25 = {
   // Add the real hosted checkout URLs after creating them in your payment provider.
@@ -315,9 +338,11 @@ function startSponsorCheckoutV25(){
  if(!box){alert('No se encontró el botón de PayPal.');return;}
  box.style.display='block';
  box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div>';
- if(typeof paypal==='undefined' || !paypal.Buttons){box.innerHTML+='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">PayPal no se ha cargado. Comprueba tu conexión y vuelve a cargar la web.</div>';return;}
  if(window.nfPayPalButtonsV25){try{window.nfPayPalButtonsV25.close();}catch(e){} }
- window.nfPayPalButtonsV25=paypal.Buttons({
+ box.innerHTML+='<div id="paypalLoadingV25" style="padding:12px;border-radius:10px;background:#eef6ff;color:#174a7e">Cargando PayPal Sandbox…</div>';
+ loadPayPalSDKV25().then(function(paypal){
+   const loading=document.getElementById('paypalLoadingV25'); if(loading) loading.remove();
+   window.nfPayPalButtonsV25=paypal.Buttons({
    style:{layout:'vertical',shape:'rect',label:'paypal'},
    createOrder:function(data,actions){
      return actions.order.create({
@@ -352,7 +377,16 @@ function startSponsorCheckoutV25(){
      if(status)status.textContent='Error de PayPal. No se ha activado ningún patrocinio.';
    }
  });
- window.nfPayPalButtonsV25.render('#paypal-button-container-v25');
+   window.nfPayPalButtonsV25.render('#paypal-button-container-v25').catch(function(err){
+     console.error(err);
+     box.innerHTML+='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">No se pudo mostrar el botón de PayPal: '+(err?.message||err)+'</div>';
+   });
+ }).catch(function(err){
+   console.error(err);
+   box.innerHTML+='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">PayPal no se ha cargado: '+err.message+'</div>';
+   const status=document.getElementById('sponsorPaymentStatusV25');
+   if(status) status.textContent='No se pudo cargar PayPal Sandbox. Recarga la página y prueba de nuevo.';
+ });
 }
 
 document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}});
