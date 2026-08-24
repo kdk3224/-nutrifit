@@ -297,7 +297,22 @@ function sponsorPlanV3(plan){
  const e=document.getElementById('sponsorPaymentStatusV24');
  if(e)e.textContent='Plan seleccionado: '+p.display+' · '+(p.hours===24?'24 horas':p.hours===168?'7 días':'30 días')+'. Selecciona el método de pago.';
 }
-function startSponsorCheckoutV24(){
+function loadPayPalSdkV28(){
+ return new Promise((resolve,reject)=>{
+  if(window.paypal && window.paypal.Buttons){resolve(window.paypal);return;}
+  if(window.nfPayPalSdkPromiseV28){window.nfPayPalSdkPromiseV28.then(resolve).catch(reject);return;}
+  const client='AaJoqjm6Sou7-BVnssK4bUZgxjivIKHwqBXY8aVR';
+  const s=document.createElement('script');
+  s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(client)+'&currency=EUR&components=buttons';
+  s.async=true;
+  s.onload=()=>{ if(window.paypal && window.paypal.Buttons) resolve(window.paypal); else reject(new Error('SDK cargado pero PayPal no está disponible')); };
+  s.onerror=()=>reject(new Error('No se pudo descargar el SDK de PayPal'));
+  document.head.appendChild(s);
+  window.nfPayPalSdkPromiseV28=new Promise((res,rej)=>{s.addEventListener('load',()=>res(window.paypal));s.addEventListener('error',()=>rej(new Error('No se pudo descargar el SDK de PayPal')));});
+ });
+}
+
+async function startSponsorCheckoutV24(){
  const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
  const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
  const url=(document.getElementById('sponsorUrlV24')?.value||'').trim();
@@ -305,54 +320,48 @@ function startSponsorCheckoutV24(){
  if(!text){alert('Escribe el texto del anuncio.');return;}
  if(!nfSponsorMethodV24){alert('Selecciona un método de pago.');return;}
  const plan=NF_SPONSOR_CHECKOUT_V24[nfSponsorPlanV24];
- const pending={name,text,url,plan:nfSponsorPlanV24,method:nfSponsorMethodV24,createdAt:Date.now()};
- localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify(pending));
+ localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({name,text,url,plan:nfSponsorPlanV24,method:nfSponsorMethodV24,createdAt:Date.now()}));
  if(nfSponsorMethodV24!=='paypal'){
-   alert('En esta versión de prueba solo está conectado PayPal Sandbox. Selecciona PayPal para probar el pago.');
-   return;
+  alert('En esta versión de prueba solo está conectado PayPal Sandbox. Selecciona PayPal para probar el pago.');
+  return;
  }
  const box=document.getElementById('paypal-button-container-v24');
  if(!box){alert('No se encontró el botón de PayPal.');return;}
  box.style.display='block';
- box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div>';
- if(typeof paypal==='undefined' || !paypal.Buttons){const reason=window.nfPayPalSdkLoadError?'El SDK de PayPal ha sido rechazado por el navegador o PayPal.':'El SDK de PayPal todavía no está disponible.';box.innerHTML+='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">'+reason+'<br><small>V27 · SDK directo + diagnóstico</small></div>';return;}
- if(window.nfPayPalButtonsV24){try{window.nfPayPalButtonsV24.close();}catch(e){} }
- window.nfPayPalButtonsV24=paypal.Buttons({
+ box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div><div style="padding:12px;border-radius:10px;background:#eef5ff;color:#244d7a">Cargando PayPal Sandbox…</div>';
+ try{
+  const pp=await loadPayPalSdkV28();
+  box.innerHTML='<div style="font-weight:700;margin:8px 0">Pago de prueba PayPal Sandbox · '+plan.display+'</div>';
+  if(window.nfPayPalButtonsV24){try{window.nfPayPalButtonsV24.close();}catch(e){} }
+  window.nfPayPalButtonsV24=pp.Buttons({
    style:{layout:'vertical',shape:'rect',label:'paypal'},
    createOrder:function(data,actions){
-     return actions.order.create({
-       purchase_units:[{description:'NutriFit Sponsor '+plan.display,amount:{currency_code:'EUR',value:plan.amount}}]
-     });
+    return actions.order.create({purchase_units:[{description:'NutriFit Sponsor '+plan.display,amount:{currency_code:'EUR',value:plan.amount}}]});
    },
    onApprove:function(data,actions){
-     return actions.order.capture().then(function(details){
-       const now=Date.now();
-       const expiresAt=now+(plan.hours*60*60*1000);
-       const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>!x.expiresAt||x.expiresAt>now);
-       const used=saved.map(x=>x.slot).filter(Boolean);
-       const slot=[1,2,3,4,5,6,7,8].find(n=>!used.includes(n))||1;
-       const sponsor={id:Date.now(),slot:slot,name:name,text:text,url:url,plan:nfSponsorPlanV24,amount:plan.amount,currency:'EUR',hours:plan.hours,createdAt:now,expiresAt:expiresAt,paymentId:data.orderID,status:'paid_sandbox'};
-       saved.push(sponsor);
-       localStorage.setItem('nf_sponsors_v14',JSON.stringify(saved));
-       localStorage.removeItem('nf_sponsor_pending_v24');
-       renderSponsorsV14();
-       box.style.display='none';
-       const status=document.getElementById('sponsorPaymentStatusV24');
-       if(status)status.textContent='✅ Pago de prueba confirmado. Patrocinio activo durante '+plan.hours+' h.';
-       alert('✅ Pago de prueba realizado correctamente.\n\n'+(details.payer?.name?.given_name||'Patrocinador')+' · '+plan.display+'\nID: '+data.orderID);
-     });
-   },
-   onCancel:function(){
+    return actions.order.capture().then(function(details){
+     const now=Date.now();
+     const expiresAt=now+(plan.hours*60*60*1000);
+     const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>!x.expiresAt||x.expiresAt>now);
+     const used=saved.map(x=>x.slot).filter(Boolean);
+     const slot=[1,2,3,4,5,6,7,8].find(n=>!used.includes(n))||1;
+     saved.push({id:Date.now(),slot,name,text,url,plan:nfSponsorPlanV24,amount:plan.amount,currency:'EUR',hours:plan.hours,createdAt:now,expiresAt,paymentId:data.orderID,status:'paid_sandbox'});
+     localStorage.setItem('nf_sponsors_v14',JSON.stringify(saved));
+     localStorage.removeItem('nf_sponsor_pending_v24');
+     renderSponsorsV14(); box.style.display='none';
      const status=document.getElementById('sponsorPaymentStatusV24');
-     if(status)status.textContent='Pago cancelado. No se ha activado ningún patrocinio.';
+     if(status)status.textContent='✅ Pago de prueba confirmado. Patrocinio activo durante '+plan.hours+' h.';
+     alert('✅ Pago de prueba realizado correctamente.\n\n'+(details.payer?.name?.given_name||'Patrocinador')+' · '+plan.display+'\nID: '+data.orderID);
+    });
    },
-   onError:function(err){
-     console.error(err);
-     const status=document.getElementById('sponsorPaymentStatusV24');
-     if(status)status.textContent='Error de PayPal. No se ha activado ningún patrocinio.';
-   }
- });
- window.nfPayPalButtonsV24.render('#paypal-button-container-v24');
+   onCancel:function(){const status=document.getElementById('sponsorPaymentStatusV24');if(status)status.textContent='Pago cancelado. No se ha activado ningún patrocinio.';},
+   onError:function(err){console.error(err);const status=document.getElementById('sponsorPaymentStatusV24');if(status)status.textContent='Error de PayPal. No se ha activado ningún patrocinio.';}
+  });
+  await window.nfPayPalButtonsV24.render('#paypal-button-container-v24');
+ }catch(err){
+  console.error('PayPal SDK V28:',err);
+  box.innerHTML='<div style="padding:12px;border-radius:10px;background:#fee;color:#900">No se pudo cargar PayPal Sandbox desde este iPhone. El resto de NutriFit funciona correctamente.<br><small>V28 · carga dinámica del SDK</small></div>';
+ }
 }
 
 document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}});
