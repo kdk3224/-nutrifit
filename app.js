@@ -275,3 +275,35 @@ function sponsorPlanV3(plan){
 function selectSponsorPaymentV20(method){const e=document.getElementById('sponsorPaymentStatusV20');if(e)e.textContent='Método seleccionado: '+method+'. El checkout real se activará al conectar el proveedor.';}
 function exportNutriFitDataV20(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);try{d[k]=JSON.parse(localStorage.getItem(k));}catch(e){d[k]=localStorage.getItem(k);}}const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='nutrifit-datos.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 function deleteNutriFitDataV20(){if(!confirm('¿Borrar todos los datos guardados localmente en NutriFit?'))return;const keep=['nf_welcome_seen_v4'];const keys=[];for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));keys.forEach(k=>{if(!keep.includes(k))localStorage.removeItem(k)});location.reload();}
+// V24 Sponsors — checkout flow without fake payment confirmation.
+const NF_SPONSOR_CHECKOUT_V24 = {
+  // Add the real hosted checkout URLs after creating them in your payment provider.
+  day: {amount:'$1', hours:24, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
+  week:{amount:'$5', hours:168, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
+  month:{amount:'$25',hours:720, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}}
+};
+let nfSponsorPlanV24='day';
+let nfSponsorMethodV24='';
+function selectSponsorPaymentV24(method){
+ nfSponsorMethodV24=method;
+ const e=document.getElementById('sponsorPaymentStatusV24');
+ if(e)e.textContent='Método seleccionado: '+({card:'Tarjeta',applepay:'Apple Pay',googlepay:'Google Pay',paypal:'PayPal',revolut:'Revolut Pay'}[method]||method)+'. Ahora pulsa «Continuar al pago». ';
+}
+function sponsorPlanV3(plan){
+ nfSponsorPlanV24=plan;
+ const p=NF_SPONSOR_CHECKOUT_V24[plan];
+ const e=document.getElementById('sponsorPaymentStatusV24');
+ if(e)e.textContent='Plan seleccionado: '+p.amount+' · '+(p.hours===24?'24 horas':p.hours===168?'7 días':'30 días')+'. Selecciona el método de pago.';
+}
+function startSponsorCheckoutV24(){
+ const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
+ const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
+ const url=(document.getElementById('sponsorUrlV24')?.value||'').trim();
+ if(!name||!text){alert('Añade el nombre del negocio y el texto del anuncio.');return;}
+ if(!nfSponsorMethodV24){alert('Selecciona un método de pago.');return;}
+ const plan=NF_SPONSOR_CHECKOUT_V24[nfSponsorPlanV24];
+ const link=plan.links[nfSponsorMethodV24];
+ localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({name,text,url,plan:nfSponsorPlanV24,method:nfSponsorMethodV24,createdAt:Date.now()}));
+ if(link){window.location.href=link;return;}
+ alert('El checkout de '+plan.amount+' está preparado, pero todavía falta conectar el enlace real de pago del proveedor. No se ha registrado ningún pago.');
+}
