@@ -1,3 +1,9 @@
+const NF_BACKEND_URL = window.NF_BACKEND_URL || 'https://TU-PROYECTO.vercel.app';
+// Supabase public client configuration. Publishable keys are safe for browser use when RLS is configured.
+const NF_SUPABASE_URL = 'https://vqkcwwfxcieqrvwbmhfc.supabase.co';
+const NF_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_crf3s4OnQDdXv1ufEq2vng_pM6udRB5';
+const NF_SUPABASE_REST = NF_SUPABASE_URL + '/rest/v1';
+let NF_REMOTE_SPONSORS = [];
 const foods=[['Pechuga de pollo',165,31,0,3.6,1.0,0,0,0.15],['Pechuga de pavo',104,24,0,1,0.3,0,0,0.12],['Atún al natural',116,26,0,1,0.2,0,0,1.0],['Salmón',208,20,0,13,3.1,0,0,0.13],['Huevo',143,12.6,.7,9.5,3.1,0.4,0,0.36],['Arroz cocido',130,2.7,28,.3,0.1,0,0.4,0],['Arroz crudo',360,7,79,.7,0.2,0.1,1.3,0.01],['Pasta cocida',158,5.8,30.9,.9,0.2,0.5,1.8,0.01],['Avena',389,16.9,66.3,6.9,1.2,0.9,10.6,0],['Pan integral',247,13,41,4.2,0.7,5.0,6.5,1.2],['Patata cocida',87,1.9,20,.1,0,0.9,1.8,0.01],['Lentejas cocidas',116,9,20,.4,0.1,1.8,7.9,0.01],['Garbanzos cocidos',164,8.9,27.4,2.6,0.3,2.4,7.6,0.01],['Leche semidesnatada',46,3.3,4.8,1.6,1.0,4.8,0,0.1],['Yogur natural',61,3.5,4.7,3.3,2.1,4.7,0,0.1],['Plátano',89,1.1,22.8,.3,0.1,12.2,2.6,0],['Manzana',52,.3,14,.2,0.03,10.4,2.4,0],['Tomate',18,.9,3.9,.2,0.03,2.6,1.2,0.01],['Aguacate',160,2,8.5,14.7,2.1,0.7,6.7,0.01],['Almendras',579,21,22,50,3.8,4.4,12.5,0],['Aceite de oliva',884,0,0,100,14.0,0,0,0],['Brócoli',35,2.4,7.2,.4,0.05,1.4,3.3,0.03],['Zanahoria',41,.9,9.6,.2,0.03,4.7,2.8,0.07],['Queso fresco',174,11,3,13,8.5,3.0,0,0.8],['Ternera magra',172,26,0,7,2.7,0,0,0.15],['Cerdo magro',143,21,0,6,2.1,0,0,0.15],['Merluza',89,18,0,1.8,0.4,0,0,0.16],['Gamba',99,24,0,0.3,0.1,0,0,1.0],['Naranja',47,.9,11.8,.1,0.02,8.5,2.4,0],['Fresas',32,.7,7.7,.3,0.02,4.9,2.0,0],['Kiwi',61,1.1,14.7,.5,0.03,8.9,3.0,0.01],['Cacahuetes',567,25.8,16.1,49.2,6.8,4.0,8.5,0]];
 let profile=JSON.parse(localStorage.getItem('nf_profile_v3')||'null'),log=JSON.parse(localStorage.getItem('nf_log_v3')||'[]'),water=+localStorage.getItem('nf_water_v3')||0,favs=JSON.parse(localStorage.getItem('nf_favs_v3')||'[]'),history=JSON.parse(localStorage.getItem('nf_history_v3')||'[]'),selected=null;
 const $=id=>document.getElementById(id);
@@ -220,17 +226,36 @@ const goV13Base=go;
 go=function(id){goV13Base(id);if(id==='profile')renderProfileV13();if(id==='sponsors')setTimeout(renderSponsorsV14,0);};
 
 const sponsorsV14=Array.from({length:8},(_,i)=>({id:i+1}));
+function sponsorRemainingHours(a, now=Date.now()){
+ const exp=a?.expiresAt ? new Date(a.expiresAt).getTime() : 0;
+ return exp ? Math.max(1,Math.ceil((exp-now)/3600000)) : 24;
+}
+async function loadSupabaseSponsorRowsV37(){
+ try{
+  const url=NF_SUPABASE_REST+'/Sponsor?select=id,created_at,name,active,image_url,Plan,website,description,expires_at&active=eq.true&order=created_at.desc';
+  const r=await fetch(url,{headers:{apikey:NF_SUPABASE_PUBLISHABLE_KEY,Authorization:'Bearer '+NF_SUPABASE_PUBLISHABLE_KEY},cache:'no-store'});
+  if(!r.ok) throw new Error('Supabase HTTP '+r.status);
+  const rows=await r.json();
+  const now=Date.now();
+  NF_REMOTE_SPONSORS=rows.filter(x=>!x.expires_at||new Date(x.expires_at).getTime()>now).map((x,i)=>({
+   id:x.id,slot:i+1,name:x.name||'Patrocinador',text:x.description||'',url:x.website||'',logo:'⭐',imageUrl:x.image_url||'',expiresAt:x.expires_at||null,plan:x.Plan||'day'
+  }));
+  renderSponsorsV14();
+ }catch(e){console.warn('Supabase Sponsor no disponible',e);}
+}
 function renderSponsorsV14(){
  const box=$('sponsorGridV14'); if(!box)return;
  const now=Date.now();
  const saved=JSON.parse(localStorage.getItem('nf_sponsors_v14')||'[]').filter(x=>!x.expiresAt||x.expiresAt>now);
  localStorage.setItem('nf_sponsors_v14',JSON.stringify(saved));
+ const remote=NF_REMOTE_SPONSORS||[];
  box.innerHTML=sponsorsV14.map(s=>{
-   const a=saved.find(x=>x.slot===s.id) || saved.find(x=>!x.slot);
-   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.logo||'⭐'}</span><b>${a.name}</b><small>Patrocinador · ${Math.max(1,Math.ceil((a.expiresAt-now)/3600000))} h</small></button>`;
+   const a=remote.find(x=>x.slot===s.id) || saved.find(x=>x.slot===s.id) || saved.find(x=>!x.slot);
+   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.imageUrl?`<img src="${String(a.imageUrl).replace(/"/g,'&quot;')}" alt="">`:a.logo||'⭐'}</span><b>${String(a.name||'Patrocinador').replace(/[<>&"']/g,'')}</b><small>Patrocinador · ${sponsorRemainingHours(a,now)} h</small></button>`;
    return `<button class="sponsorSlotV14" onclick="buySponsorV14(${s.id})"><span class="plusSponsorV14">＋</span><b>Patrocina este espacio</b><small>$1 · 24 horas</small></button>`;
  }).join('');
 }
+
 let nfSponsorSlotV31=1;
 function openSponsorCheckoutV31(id=1){
  nfSponsorSlotV31=Number(id)||1;
@@ -377,7 +402,7 @@ async function startSponsorCheckoutV24(){
  }
 }
 
-document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}});
+document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}; loadSupabaseSponsorRowsV37();});
 
 
 // V33 — Stripe Payment Links
@@ -439,8 +464,8 @@ function startSponsorCheckoutV24(){
   });
 })();
 
-const nfV35OriginalCheckout = window.startSponsorCheckoutV24;
-window.startSponsorCheckoutV24 = function(){
+const nfV36OriginalCheckout = window.startSponsorCheckoutV24;
+window.startSponsorCheckoutV24 = async function(){
   const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
   const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
   const url=(document.getElementById('sponsorUrlV24')?.value||'').trim();
@@ -449,9 +474,56 @@ window.startSponsorCheckoutV24 = function(){
   if(!text){alert('Escribe el texto del anuncio.');return;}
   if(!image){alert('Sube el logo o foto del negocio.');return;}
   if(url && !/^https?:\/\//i.test(url)){alert('La web debe empezar por https:// o http://');return;}
-  localStorage.setItem('nf_sponsor_pending_v34',JSON.stringify({
-    name,text,url,image,plan:(window.nfSponsorPlanV24||'day'),
-    createdAt:Date.now()
-  }));
-  if(typeof nfV35OriginalCheckout==='function') return nfV35OriginalCheckout();
+  if(!/^https:\/\/[^/]+\.vercel\.app$/i.test(NF_BACKEND_URL) && NF_BACKEND_URL.includes('TU-PROYECTO')){
+    alert('Primero conecta la URL del backend de NutriFit.'); return;
+  }
+  const plan=window.nfSponsorPlanV24||'day';
+  try{
+    const r=await fetch(NF_BACKEND_URL+'/api/sponsor/create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,text,url,plan,imageData:image})
+    });
+    const result=await r.json();
+    if(!r.ok) throw new Error(result.error||'Error creando el patrocinio');
+    localStorage.setItem('nf_sponsor_pending_v36',JSON.stringify({
+      id:result.id,name,text,url,plan,createdAt:Date.now()
+    }));
+    const links={
+      day:'https://buy.stripe.com/6oUdR93see0MdPTet00kE01',
+      week:'https://buy.stripe.com/6oUeVd1k6g8UfY170y0kE02',
+      month:'https://buy.stripe.com/8x2aEXaUG1e0fY170y0kE03'
+    };
+    const sep=links[plan].includes('?')?'&':'?';
+    window.location.href=links[plan]+sep+'client_reference_id='+encodeURIComponent(result.clientReferenceId);
+  }catch(e){
+    console.error(e);
+    alert(e.message||'No se pudo preparar el pago.');
+  }
 };
+
+async function loadNutriFitSponsorsV36(){
+  if(!NF_BACKEND_URL || NF_BACKEND_URL.includes('TU-PROYECTO')) return;
+  try{
+    const r=await fetch(NF_BACKEND_URL+'/api/sponsor/list',{cache:'no-store'});
+    if(!r.ok) return;
+    const sponsors=await r.json();
+    window.NF_ACTIVE_SPONSORS=sponsors;
+    document.dispatchEvent(new CustomEvent('nf:sponsors-loaded',{detail:sponsors}));
+  }catch(e){ console.warn('Sponsors no disponibles',e); }
+}
+document.addEventListener('DOMContentLoaded',loadNutriFitSponsorsV36);
+
+document.addEventListener('nf:sponsors-loaded', (ev)=>{
+  const list=ev.detail||[];
+  const containers=document.querySelectorAll('[data-nutrifit-sponsors]');
+  containers.forEach(c=>{
+    c.innerHTML=list.map(s=>`
+      <article class="nf-sponsor-card">
+        <img src="${String(s.imageUrl).replace(/"/g,'&quot;')}" alt="">
+        <div><strong>${String(s.name).replace(/[<>&"]/g,'')}</strong>
+        <p>${String(s.text).replace(/[<>&"]/g,'')}</p>
+        ${s.url?`<a href="${String(s.url).replace(/"/g,'&quot;')}" target="_blank" rel="noopener">Visitar web →</a>`:''}</div>
+      </article>`).join('');
+  });
+});

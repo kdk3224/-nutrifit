@@ -1,0 +1,6 @@
+Supabase connected for the existing public.Sponsor table.
+Project URL: https://vqkcwwfxcieqrvwbmhfc.supabase.co
+Frontend key: publishable key (safe for browser use with RLS)
+
+The app reads active rows from public.Sponsor via /rest/v1/Sponsor.
+The service_role/secret key is NOT included.

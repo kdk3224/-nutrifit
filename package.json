@@ -1,0 +1,9 @@
+{
+  "name": "nutrifit-sponsor-backend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "stripe": "^18.5.0"
+  }
+}
