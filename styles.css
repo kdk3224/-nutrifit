@@ -372,3 +372,35 @@ main{padding-bottom:0!important}
 .nf-sponsor-card img{width:76px;height:76px;object-fit:cover;border-radius:14px}
 .nf-sponsor-card p{margin:4px 0;font-size:.9rem}
 .nf-sponsor-card a{font-weight:700;text-decoration:none}
+
+/* FIX SPONSORS V38 — prevent sponsor images/placeholders from overflowing cards */
+.sponsorSlotV14 .sponsorLogoV14{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  max-width:48px!important;
+  max-height:48px!important;
+  overflow:hidden!important;
+  flex:0 0 48px!important;
+  box-sizing:border-box!important;
+}
+.sponsorSlotV14 .sponsorLogoV14 img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border:0!important;
+  border-radius:12px!important;
+}
+.sponsorSlotV14 b,.sponsorSlotV14 small{
+  position:relative!important;
+  z-index:2!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}

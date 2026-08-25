@@ -251,7 +251,7 @@ function renderSponsorsV14(){
  const remote=NF_REMOTE_SPONSORS||[];
  box.innerHTML=sponsorsV14.map(s=>{
    const a=remote.find(x=>x.slot===s.id) || saved.find(x=>x.slot===s.id) || saved.find(x=>!x.slot);
-   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.imageUrl?`<img src="${String(a.imageUrl).replace(/"/g,'&quot;')}" alt="">`:a.logo||'⭐'}</span><b>${String(a.name||'Patrocinador').replace(/[<>&"']/g,'')}</b><small>Patrocinador · ${sponsorRemainingHours(a,now)} h</small></button>`;
+   if(a) return `<button class="sponsorSlotV14 active" onclick="showSponsorV14(${s.id})"><span class="sponsorLogoV14">${a.imageUrl && !/placehold\.co/i.test(String(a.imageUrl))?`<img src="${String(a.imageUrl).replace(/"/g,'&quot;')}" alt="" loading="lazy">`:a.logo||'⭐'}</span><b>${String(a.name||'Patrocinador').replace(/[<>&"']/g,'')}</b><small>Patrocinador · ${sponsorRemainingHours(a,now)} h</small></button>`;
    return `<button class="sponsorSlotV14" onclick="buySponsorV14(${s.id})"><span class="plusSponsorV14">＋</span><b>Patrocina este espacio</b><small>$1 · 24 horas</small></button>`;
  }).join('');
 }
