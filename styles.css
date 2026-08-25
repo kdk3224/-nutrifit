@@ -404,3 +404,9 @@ main{padding-bottom:0!important}
   text-overflow:ellipsis!important;
   white-space:nowrap!important;
 }
+
+/* V39 — sponsor slots never render remote creative inside the grid.
+   This prevents legacy/placeholder images from creating oversized blocks. */
+.sponsorGridV14,.sponsorSlotV14{position:relative!important;overflow:hidden!important}
+.sponsorSlotV14 .sponsorLogoV14 img{display:none!important}
+.sponsorSlotV14 .sponsorLogoV14{overflow:hidden!important;position:relative!important}
