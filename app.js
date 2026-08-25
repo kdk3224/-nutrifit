@@ -286,10 +286,9 @@ function exportNutriFitDataV20(){const d={};for(let i=0;i<localStorage.length;i+
 function deleteNutriFitDataV20(){if(!confirm('¿Borrar todos los datos guardados localmente en NutriFit?'))return;const keep=['nf_welcome_seen_v4'];const keys=[];for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));keys.forEach(k=>{if(!keep.includes(k))localStorage.removeItem(k)});location.reload();}
 // V24 Sponsors — checkout flow without fake payment confirmation.
 const NF_SPONSOR_CHECKOUT_V24 = {
-  // Add the real hosted checkout URLs after creating them in your payment provider.
-  day: {amount:'1.00', display:'1 €', hours:24, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
-  week:{amount:'5.00', display:'5 €', hours:168, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}},
-  month:{amount:'25.00', display:'25 €', hours:720, links:{card:'',applepay:'',googlepay:'',paypal:'',revolut:''}}
+  day: {amount:'1.00', display:'1 €', hours:24, stripe:'https://buy.stripe.com/6oUdR93see0MdPTet00kE01'},
+  week:{amount:'5.00', display:'5 €', hours:168, stripe:'https://buy.stripe.com/6oUeVd1k6g8UfY170y0kE02'},
+  month:{amount:'25.00', display:'25 €', hours:720, stripe:'https://buy.stripe.com/8x2aEXaUG1e0fY170y0kE03'}
 };
 let nfSponsorPlanV24='day';
 let nfSponsorMethodV24='';
@@ -381,26 +380,38 @@ async function startSponsorCheckoutV24(){
 document.addEventListener('DOMContentLoaded',()=>{try{renderSponsorsV14();}catch(e){}});
 
 
-// V32 — Stripe Payment Links
+// V33 — Stripe Payment Links
 function selectSponsorPaymentV24(method){
   nfSponsorMethodV24=method;
   document.querySelectorAll('#sponsorMethodsV24 button').forEach(b=>b.classList.remove('active'));
-  const btn=[...document.querySelectorAll('#sponsorMethodsV24 button')].find(b=>b.getAttribute('onclick')===`selectSponsorPaymentV24('${method}')`);
+  const btn=[...document.querySelectorAll('#sponsorMethodsV24 button')].find(
+    b=>b.getAttribute('onclick')===`selectSponsorPaymentV24('${method}')`
+  );
   if(btn) btn.classList.add('active');
   const e=document.getElementById('sponsorPaymentStatusV24');
   if(e){
-    if(method==='paypal') e.textContent='PayPal se conectará como opción independiente.';
-    else e.textContent='Pago seguro con Stripe. El checkout mostrará los métodos compatibles con tu dispositivo.';
+    e.textContent = method==='paypal'
+      ? 'PayPal se conectará como opción independiente.'
+      : 'Pago seguro con Stripe. El checkout mostrará los métodos compatibles con tu dispositivo.';
   }
 }
+
 function startSponsorCheckoutV24(){
-  const planKey=nfSponsorPlanV24;
-  const plan=NF_SPONSOR_PLANS_V24[planKey];
-  if(!plan){ alert('Selecciona un plan.'); return; }
-  if(nfSponsorMethodV24==='paypal'){
-    alert('La opción PayPal todavía no está conectada. De momento usa Tarjeta / Apple Pay / Google Pay mediante Stripe.');
+  const planKey=nfSponsorPlanV24 || 'day';
+  const plan=NF_SPONSOR_CHECKOUT_V24[planKey];
+  if(!plan || !plan.stripe){
+    alert('No encontramos el enlace de pago para este plan.');
     return;
   }
-  if(!plan.stripe){ alert('No encontramos el enlace de pago para este plan.'); return; }
+  if(nfSponsorMethodV24==='paypal'){
+    alert('PayPal todavía no está conectado. Para pagar ahora, selecciona Tarjeta, Apple Pay o Google Pay.');
+    return;
+  }
+  const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
+  const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
+  const url=(document.getElementById('sponsorUrlV24')?.value||'').trim();
+  localStorage.setItem('nf_sponsor_pending_v24',JSON.stringify({
+    name,text,url,plan:planKey,method:nfSponsorMethodV24||'stripe',slot:nfSponsorSlotV31,createdAt:Date.now()
+  }));
   window.location.href=plan.stripe;
 }
