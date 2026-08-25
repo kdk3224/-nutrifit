@@ -415,3 +415,43 @@ function startSponsorCheckoutV24(){
   }));
   window.location.href=plan.stripe;
 }
+
+// V34 — Sponsor creative: photo/logo + business details.
+// The image is stored locally for now so the form can preview it without exposing secrets.
+// For public multi-device publishing after payment, a hosted storage/backend is still required.
+(function(){
+  const input=document.getElementById('sponsorImageV34');
+  const preview=document.getElementById('sponsorPreviewV34');
+  if(!input || !preview) return;
+  input.addEventListener('change',()=>{
+    const file=input.files && input.files[0];
+    if(!file) return;
+    if(file.size>2*1024*1024){ alert('La imagen debe pesar menos de 2 MB.'); input.value=''; return; }
+    const reader=new FileReader();
+    reader.onload=()=>{
+      preview.innerHTML='';
+      const img=document.createElement('img');
+      img.src=reader.result;
+      preview.appendChild(img);
+      localStorage.setItem('nf_sponsor_image_pending_v34',reader.result);
+    };
+    reader.readAsDataURL(file);
+  });
+})();
+
+const nfV34OriginalCheckout = window.startSponsorCheckoutV24;
+window.startSponsorCheckoutV24 = function(){
+  const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
+  const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
+  const url=(document.getElementById('sponsorUrlV24')?.value||'').trim();
+  const image=localStorage.getItem('nf_sponsor_image_pending_v34')||'';
+  if(!name){alert('Escribe el nombre del negocio.');return;}
+  if(!text){alert('Escribe el texto del anuncio.');return;}
+  if(!image){alert('Sube el logo o foto del negocio.');return;}
+  if(url && !/^https?:\/\//i.test(url)){alert('La web debe empezar por https:// o http://');return;}
+  localStorage.setItem('nf_sponsor_pending_v34',JSON.stringify({
+    name,text,url,image,plan:(window.nfSponsorPlanV24||'day'),
+    createdAt:Date.now()
+  }));
+  if(typeof nfV34OriginalCheckout==='function') return nfV34OriginalCheckout();
+};

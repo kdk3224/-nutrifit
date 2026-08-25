@@ -359,3 +359,11 @@ main{padding-bottom:0!important}
 
 /* V31 mobile sponsor-first layout */
 .sponsorFirstTitleV31{margin-top:18px}.sponsorInviteV31{margin:14px 0 16px;padding:16px;border:1px solid #e2e9e3;border-radius:20px;background:#f7fbf8}.sponsorInviteV31 b,.sponsorInviteV31 span{display:block}.sponsorInviteV31 span{font-size:11px;color:#6f7c74;line-height:1.4;margin:5px 0 12px}.sponsorInviteV31 .primary{width:100%}.sponsorCheckoutCollapsedV31{display:none}.sponsorGridV14 .sponsorSlotV14{min-height:150px}
+
+/* V34 sponsor creative */
+.sponsor-creative-v34{display:grid;gap:8px;margin:14px 0}
+.sponsor-creative-v34 label{font-weight:700;font-size:.92rem}
+.sponsor-creative-v34 input,.sponsor-creative-v34 textarea{width:100%;box-sizing:border-box;border:1px solid #d9e4dc;border-radius:12px;padding:11px;background:#fff;font:inherit}
+.sponsor-creative-v34 textarea{min-height:72px;resize:vertical}
+.sponsor-preview-v34{min-height:110px;border:1px dashed #9cc8a9;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f4faf6;color:#6c7a71;font-size:.9rem}
+.sponsor-preview-v34 img{width:100%;height:150px;object-fit:cover;display:block}
