@@ -439,7 +439,7 @@ function startSponsorCheckoutV24(){
   });
 })();
 
-const nfV34OriginalCheckout = window.startSponsorCheckoutV24;
+const nfV35OriginalCheckout = window.startSponsorCheckoutV24;
 window.startSponsorCheckoutV24 = function(){
   const name=(document.getElementById('sponsorNameV24')?.value||'').trim();
   const text=(document.getElementById('sponsorTextV24')?.value||'').trim();
@@ -453,5 +453,5 @@ window.startSponsorCheckoutV24 = function(){
     name,text,url,image,plan:(window.nfSponsorPlanV24||'day'),
     createdAt:Date.now()
   }));
-  if(typeof nfV34OriginalCheckout==='function') return nfV34OriginalCheckout();
+  if(typeof nfV35OriginalCheckout==='function') return nfV35OriginalCheckout();
 };

@@ -59,15 +59,9 @@
     <button class="best" onclick="sponsorPlanV3('month')"><b>25 €</b><span>30 días</span><small>⭐ Mejor opción</small></button>
   </div>
 <div id="sponsorCreativeV34" class="sponsor-creative-v34">
-  <label>🖼️ Logo o foto del negocio</label>
+  <label for="sponsorImageV34">🖼️ Foto o logo del negocio</label>
   <input id="sponsorImageV34" type="file" accept="image/*">
-  <div id="sponsorPreviewV34" class="sponsor-preview-v34">Añade una imagen para ver una vista previa.</div>
-  <label>🏪 Nombre del negocio</label>
-  <input id="sponsorNameV24" type="text" maxlength="50" placeholder="Ej. Nutrición Salamanca">
-  <label>📝 Texto del anuncio</label>
-  <textarea id="sponsorTextV24" maxlength="120" placeholder="Describe tu negocio en pocas palabras"></textarea>
-  <label>🔗 Web</label>
-  <input id="sponsorUrlV24" type="url" placeholder="https://tusitio.com">
+  <div id="sponsorPreviewV34" class="sponsor-preview-v34">Selecciona una foto o logo para tu anuncio.</div>
 </div>
 
 <div class="chips" id="sponsorMethodsV24"><button type="button" onclick="selectSponsorPaymentV24('card')">💳 Tarjeta</button><button type="button" onclick="selectSponsorPaymentV24('applepay')">🍎 Apple Pay</button><button type="button" onclick="selectSponsorPaymentV24('googlepay')">🟢 Google Pay</button><button type="button" onclick="selectSponsorPaymentV24('paypal')">🅿️ PayPal</button></div><small id="sponsorPaymentStatusV24">Selecciona un plan y paga de forma segura.</small><button class="primary" type="button" onclick="startSponsorCheckoutV24()">Continuar al pago →</button><div id="paypal-button-container-v24" style="display:none;margin-top:14px"></div><small class="sponsorCheckoutNoteV24">Tarjeta, Apple Pay y Google Pay se abren mediante Stripe Checkout. PayPal se añadirá como opción independiente.</small></div>
@@ -89,7 +83,7 @@
 </nav>
 
 <div id="modal" class="modal"><div class="sheet"><button class="close" onclick="closeFood()">×</button><div class="eyebrow">REGISTRAR</div><h2>Añadir alimento</h2><input id="search" class="search" placeholder="🔎 Busca pollo, arroz, avena..." oninput="renderFoods()"><div id="foodList"></div><div id="amountBox" hidden><div class="selectedfood"><b id="foodName"></b><small id="foodInfo"></small></div><button class="favoriteBtn" onclick="toggleFavorite()">☆ Favorito</button><label>Cantidad (g)<input id="amount" type="number" value="100"></label><label>Comida<select id="meal"><option>Desayuno</option><option>Comida</option><option>Merienda</option><option>Cena</option><option>Snack</option></select></label><button class="primary" onclick="addFood()">Añadir a mi día</button></div></div></div>
-<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script async src="https://www.sandbox.paypal.com/web-sdk/v6/core" onload="window.nfPayPalV6Loaded=true;window.dispatchEvent(new Event('nf-paypal-v6-loaded'))" onerror="window.nfPayPalV6Error=true;window.dispatchEvent(new Event('nf-paypal-v6-error'))"></script><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script><script src="app.js?v=34"></script><div class="nfFeatureModal" id="scannerModalV15" aria-hidden="true">
+<div id="swapModal" class="modal"><div class="sheet"><button class="close" onclick="closeSwap()">×</button><div class="eyebrow">PERSONALIZA</div><h2 id="swapTitle">Cambia tu comida</h2><p class="modalhint">Elige qué te apetece y te mostraremos opciones que encajen.</p><div id="swapChips" class="chips"></div><div id="swapOptions"></div></div></div><script async src="https://www.sandbox.paypal.com/web-sdk/v6/core" onload="window.nfPayPalV6Loaded=true;window.dispatchEvent(new Event('nf-paypal-v6-loaded'))" onerror="window.nfPayPalV6Error=true;window.dispatchEvent(new Event('nf-paypal-v6-error'))"></script><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script><script src="app.js?v=35"></script><div class="nfFeatureModal" id="scannerModalV15" aria-hidden="true">
   <div class="nfFeatureSheet scannerBoxV15">
     <button class="nfFeatureClose" type="button" onclick="closeScannerV15()">×</button>
     <div class="scannerIconV15">📷</div><h2>Escanear alimento</h2>
